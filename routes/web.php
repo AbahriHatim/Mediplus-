@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
-
+use App\Http\Controllers\DoctorController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -34,6 +34,7 @@ Route::get('/patientdashboard', function () {
 Route::get('/doctordashboard', function () {
     return view('doctordashboard');
 })->middleware(['auth', 'role:doctore'])->name('doctordashboard');
+
 require __DIR__.'/auth.php';
 Route::get('/admin/addDoc', [AdminController::class, 'addDoctor'])->name('admin.addDoctor');
 Route::post('/admin/addDoc', [AdminController::class, 'insertDoctor'])->name('admin.insertDoctor');
@@ -43,4 +44,15 @@ Route::get('/edit/{id}', [AdminController::class, 'editUser'])->name('editUser')
 Route::post('/update/{id}', [AdminController::class, 'updateUser'])->name('updateUser');
 Route::delete('/delete/{id}', [AdminController::class, 'deleteUser'])->name('deleteUser');
 Route::get('/admin/addDoc', [AdminController::class, 'addDoctor'])->name('addDoctor');
+
+/*Doctor*/
+Route::get('/doctor/details', [DoctorController::class, 'addDetails'])->name('addDetails');
+Route::post('/doctor/details', [DoctorController::class, 'insertDetails'])->name('insertDetails');
+Route::get('/doctordashboard', [DoctorController::class, 'index'])->name('PatientList');
+Route::get('/doctor/{patientId}/', [DoctorController::class, 'addForm'])->name('addMedicalForm');
+
+// Route to handle the insertion of a medical form
+// Route to handle the insertion of a medical form
+Route::post('/doctordashboar', [DoctorController::class, 'insertForm'])->name('insertMedicalForm');
+Route::get('/doctor/{formId}/generate-pdf', [DoctorController::class, 'generatePDF']);
 
