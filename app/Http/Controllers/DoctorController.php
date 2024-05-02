@@ -123,5 +123,6 @@ class DoctorController extends Controller
 
         return $pdf->stream('medical_form.pdf');
 
+
     }
 }    
