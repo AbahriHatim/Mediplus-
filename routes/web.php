@@ -53,6 +53,6 @@ Route::get('/doctor/{patientId}/', [DoctorController::class, 'addForm'])->name('
 
 // Route to handle the insertion of a medical form
 // Route to handle the insertion of a medical form
-Route::post('/doctordashboar', [DoctorController::class, 'insertForm'])->name('insertMedicalForm');
+Route::post('/doctordashboard', [DoctorController::class, 'insertForm'])->name('insertMedicalForm');
 Route::get('/doctor/{formId}/generate-pdf', [DoctorController::class, 'generatePDF']);
 

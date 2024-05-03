@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\DetailsDoctor; // Import the DetailsDoctor model
 use App\Models\User; 
 use App\Models\FormDoctor; 
-
+use Illuminate\Support\Facades\Response;
 
 
 
@@ -78,7 +78,6 @@ class DoctorController extends Controller
     
     
  
-    
     public function insertForm(Request $request)
     {
         $validatedData = $request->validate([
@@ -89,13 +88,21 @@ class DoctorController extends Controller
             'prescription' => 'nullable|string',
         ]);
     
+        // Retrieve the ID of the logged-in doctor
+        $doctorId = auth()->id();
+    
         // Create a new MedicalForm instance
         $medicalForm = new FormDoctor([
             'patient_id' => $validatedData['patient_id'],
+            'patient_name' => $request->patient_name,
+            'date_of_birth' => $request->date_of_birth,
+            'gender' => $request->gender,
+            'address' => $request->address,
             'symptoms' => $validatedData['symptoms'],
             'diagnosis' => $validatedData['diagnosis'],
             'treatment_plan' => $validatedData['treatment_plan'],
             'prescription' => $validatedData['prescription'],
+            'doctor_id' => $doctorId, // Assign the ID of the logged-in doctor
         ]);
     
         // Save the MedicalForm to the database
@@ -105,24 +112,24 @@ class DoctorController extends Controller
         $pdf = $this->generatePDF($medicalForm->id);
     
         // Return the PDF as a downloadable file or inline display
-        return $pdf->download('medical_form.pdf');
+        return $pdf;
     }
+    
     
     public function generatePDF($formId)
     {
         // Retrieve the medical form data from the database
         $medicalForm = FormDoctor::findOrFail($formId);
-
+    
         // Pass the medical form data to the PDF view
         $data = [
             'medicalForm' => $medicalForm,
         ];
-
+    
         // Generate the PDF using the populated template
         $pdf = PDF::loadView('medical_form_pdf', $data);
-
-        return $pdf->stream('medical_form.pdf');
-
-
+    
+        return $pdf->download('medical_form.pdf'); // Change to download for file download
+    
     }
 }    
