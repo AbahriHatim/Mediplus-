@@ -15,7 +15,7 @@ use App\Http\Controllers\DoctorController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('index');
 });
 
 
@@ -44,6 +44,8 @@ Route::get('/edit/{id}', [AdminController::class, 'editUser'])->name('editUser')
 Route::post('/update/{id}', [AdminController::class, 'updateUser'])->name('updateUser');
 Route::delete('/delete/{id}', [AdminController::class, 'deleteUser'])->name('deleteUser');
 Route::get('/admin/addDoc', [AdminController::class, 'addDoctor'])->name('addDoctor');
+Route::get('/admin/search', [AdminController::class, 'searchBarDoctor'])->name('searchBarDoctor');
+Route::get('/admin/search', [AdminController::class, 'searchBarPatient'])->name('searchBarPatient');
 
 /*Doctor*/
 Route::get('/doctor/details', [DoctorController::class, 'addDetails'])->name('addDetails');
@@ -55,4 +57,5 @@ Route::get('/doctor/{patientId}/', [DoctorController::class, 'addForm'])->name('
 // Route to handle the insertion of a medical form
 Route::post('/doctordashboard', [DoctorController::class, 'insertForm'])->name('insertMedicalForm');
 Route::get('/doctor/{formId}/generate-pdf', [DoctorController::class, 'generatePDF']);
+
 

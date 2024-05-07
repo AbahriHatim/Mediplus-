@@ -49,7 +49,7 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         // Fetch the role instance using its name
-        $patientRole = Role::where('name', 'admin')->first();
+        $patientRole = Role::where('name', 'patient')->first();
         $user->attachRole($patientRole); 
 
         Auth::login($user);

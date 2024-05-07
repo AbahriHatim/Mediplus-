@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+
+
 
 class AdminController extends Controller
 {
@@ -55,12 +58,10 @@ class AdminController extends Controller
     }
     public function doctorList()
 {
-    // Fetch doctors
-    $doctors = User::whereHas('roles', function ($query) {
+        $doctors = User::whereHas('roles', function ($query) {
         $query->where('name', 'doctore');
     })->get();
     $doctors = $doctors ?: [];
-    // Return the view with the doctors data
     return view('admin/Doctorlist', compact('doctors'));
 }
     public function editUser($id)
@@ -86,7 +87,39 @@ class AdminController extends Controller
         $user->delete();
         return redirect()->route('admindashboard')->with('success', 'User deleted successfully');
     }
- 
-        
+    public function searchBarDoctor(Request $request)
+    {
+        $search = $request->input('search');
+    
+        // Perform your search logic here
+        $doctors = User::where('name', 'like', '%'.$search.'%')
+                       ->whereHas('roles', function ($query) {
+                           $query->where('name', 'doctore');
+                       })
+                       ->get();
+    
+        // Pass the search results to the view
+        return view('admin/doctorList', compact('doctors'));
+    }
+    
+    
+    public function searchBarPatient(Request $request)
+    {
+        $search = $request->input('search');
+    
+        // Perform your search logic here
+        $patients = User::where('name', 'like', '%'.$search.'%')
+                       ->whereHas('roles', function ($query) {
+                           $query->where('name', 'patient');
+                       })
+                       ->get();
+    
+        // Pass the search results to the view
+        return view('admin/PatientList', compact('patients'));
+    }
+    
+    
+    
+       
     
 }
