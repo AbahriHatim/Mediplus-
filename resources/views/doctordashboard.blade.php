@@ -1,79 +1,97 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Doctor Dashboard') }}
-        </h2>
-    </x-slot>
-   
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="keywords" content="Site keywords here">
+    <meta name="description" content="">
+    <meta name='copyright' content=''>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <!-- Title -->
+    <title>Mediplus - Free Medical and Doctor Directory HTML Template</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="img/favicon.png">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/nice-select.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/icofont.css">
+    <link rel="stylesheet" href="css/slicknav.min.css">
+    <link rel="stylesheet" href="css/owl-carousel.css">
+    <link rel="stylesheet" href="css/datepicker.css">
+    <link rel="stylesheet" href="css/animate.min.css">
+    <link rel="stylesheet" href="css/magnific-popup.css">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <header class="header">
+        <!-- Header Inner -->
+        <div class="header-inner">
+            <div class="container">
+                <div class="inner">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-12">
+                            <!-- Start Logo -->
+                            <div class="logo">
+                                <a href="index.html"><img src="img/logo.png" alt="#"></a>
+                            </div>
+                            <!-- End Logo -->
+                            <!-- Mobile Nav -->
+                            <div class="mobile-nav"></div>
+                            <!-- End Mobile Nav -->
+                        </div>
+                        <div class="col-lg-7 col-md-9 col-12">
+                            <!-- Main Menu -->
+                            <div class="main-menu">
+                                <nav class="navigation">
+                                    <ul class="nav menu">
+                                        <li class="active"><a href="{{ route('doctordashboard') }}" style="text-decoration: none;">Home</a></li>
+                                        <li><a href="{{ route('PatientListDo') }}" style="text-decoration: none;">Patient List</a></li>
+                                        <li><a href="{{ route('chatify') }}" style="text-decoration: none;">Messenger <i class="fa fa-comment" aria-hidden="true"></i></a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                            <!--/ End Main Menu -->
+                        </div>
+                        <div class="col-lg-2 col-12">
+                            <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block" style="color: white">
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <x-dropdown-link :href="route('logout')"
+                                        onclick="event.preventDefault();
+                                        this.closest('form').submit();" class="btn" style="background-color: #1a68b3;">
+                                        {{ __('Log Out') }}
+                                    </x-dropdown-link>
+                                </form>
+                                <a href="{{ route('register') }}" style="background-color: #1a68b3; transform: translate(-120%,-100%); padding-top: 8px;" class="btn">Profile</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/ End Header Inner -->
+    </header>
+    
+    <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        {{ __('Doctor Dashboard') }}
+    </h2>
+
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
                     You're logged in as doctor!
                     <!-- Doctor Details Form -->
-                    <form method="POST" action="{{ route('insertDetails') }}">
-                        @csrf
-                       
-                        <!-- Name -->
-                        <div class="mt-4">
-                            <x-label for="name" :value="__('Name')" />
-                            <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus />
-                        </div>
-
-                        <!-- Email Address -->
-                        <div class="mt-4">
-                            <x-label for="email" :value="__('Email')" />
-                            <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required />
-                        </div>
-
-                        <!-- Phone -->
-                        <div class="mt-4">
-                            <x-label for="phone" :value="__('Phone')" />
-                            <x-input id="phone" class="block mt-1 w-full" type="text" name="phone" :value="old('phone')" />
-                        </div>
-
-                        <!-- Specialization -->
-                        <div class="mt-4">
-                            <x-label for="specialization" :value="__('Specialization')" />
-                            <x-input id="specialization" class="block mt-1 w-full" type="text" name="specialization" :value="old('specialization')" />
-                        </div>
-
-                        <!-- Address -->
-                        <div class="mt-4">
-                            <x-label for="address" :value="__('Address')" />
-                            <x-input id="address" class="block mt-1 w-full" type="text" name="address" :value="old('address')" />
-                        </div>
-
-                        <!-- City -->
-                        <div class="mt-4">
-                            <x-label for="city" :value="__('City')" />
-                            <x-input id="city" class="block mt-1 w-full" type="text" name="city" :value="old('city')" />
-                        </div>
-
-                        <!-- State -->
-                        <div class="mt-4">
-                            <x-label for="state" :value="__('State')" />
-                            <x-input id="state" class="block mt-1 w-full" type="text" name="state" :value="old('state')" />
-                        </div>
-
-                        <!-- Country -->
-                        <div class="mt-4">
-                            <x-label for="country" :value="__('Country')" />
-                            <x-input id="country" class="block mt-1 w-full" type="text" name="country" :value="old('country')" />
-                        </div>
-
-                        <!-- Postal Code -->
-                        <div class="mt-4">
-                            <x-label for="postal_code" :value="__('Postal Code')" />
-                            <x-input id="postal_code" class="block mt-1 w-full" type="text" name="postal_code" :value="old('postal_code')" />
-                        </div>
-
-                        <div class="flex items-center justify-end mt-4">
-                            <x-button class="ml-4">
-                                {{ __('Submit') }}
-                            </x-button>
-                        </div>
-                    </form>
                     <!-- End Doctor Details Form -->
                 </div>
             </div>
@@ -91,108 +109,29 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($patients as $patient)
-            <tr>
-                <th scope="row">{{ $patient->id }}</th>
-                <td>{{ $patient->name }}</td>
-                <td>{{ $patient->email }}</td>
-                <td>
-                    <a href="{{ route('addMedicalForm', ['patientId' => $patient->id]) }}" class="btn btn-primary">Edit</a>
-                </td>
-            </tr>
-        @endforeach
-        
-            
+            <!-- Table Data -->
         </tbody>
     </table>
-    <x-app-layout>
-        <x-slot name="header">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Medical Form') }}
-            </h2>
-        </x-slot>
-       
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 bg-white border-b border-gray-200">
-                        <!-- Medical Form -->
-                        <form method="POST" action="{{ route('insertMedicalForm') }}">
-                            @csrf
-                        
-                            <!-- Patient Information -->
-                            <h3 class="text-lg font-semibold mb-4">Patient Information</h3>
-                            <div class="grid grid-cols-2 gap-4">
-                                <input type="hidden" name="patient_id" value="{{ $patient->id }}">
-  
-                                <!-- Name -->
-                                <div>
-                                    <x-label for="patient_name" :value="__('Patient Name')" />
-                                    <x-input id="patient_name" class="block mt-1 w-full" type="text" name="patient_name" :value="old('patient_name')" required />
-                                </div>
-                        
-                                <!-- Date of Birth -->
-                                <div>
-                                    <x-label for="date_of_birth" :value="__('Date of Birth')" />
-                                    <x-input id="date_of_birth" class="block mt-1 w-full" type="date" name="date_of_birth" required />
-                                </div>
-                        
-                                <!-- Gender -->
-                                <div>
-                                    <x-label for="gender" :value="__('Gender')" />
-                                    <select id="gender" name="gender" class="block mt-1 w-full">
-                                        <option value="male">Male</option>
-                                        <option value="female">Female</option>
-                                        
-                                    </select>
-                                </div>
-                        
-                                <!-- Address -->
-                                <div>
-                                    <x-label for="address" :value="__('Address')" />
-                                    <x-input id="address" class="block mt-1 w-full" type="text" name="address" :value="old('address')" required />
-                                </div>
-                            </div>
-                        
-                            <!-- Medical Details -->
-                            <h3 class="text-lg font-semibold my-4">Medical Details</h3>
-                            <!-- Symptoms -->
-                            <div>
-                                <x-label for="symptoms" :value="__('Symptoms')" />
-                                <textarea id="symptoms" name="symptoms" class="block mt-1 w-full" rows="3" required>{{ old('symptoms') }}</textarea>
-                            </div>
-                        
-                            <!-- Diagnosis -->
-                            <div class="mt-4">
-                                <x-label for="diagnosis" :value="__('Diagnosis')" />
-                                <textarea id="diagnosis" name="diagnosis" class="block mt-1 w-full" rows="3" required>{{ old('diagnosis') }}</textarea>
-                            </div>
-                        
-                            <!-- Treatment Plan -->
-                            <div class="mt-4">
-                                <x-label for="treatment_plan" :value="__('Treatment Plan')" />
-                                <textarea id="treatment_plan" name="treatment_plan" class="block mt-1 w-full" rows="3" required>{{ old('treatment_plan') }}</textarea>
-                            </div>
-                        
-                            <!-- Prescription -->
-                            <div class="mt-4">
-                                <x-label for="prescription" :value="__('Prescription')" />
-                                <textarea id="prescription" name="prescription" class="block mt-1 w-full" rows="3">{{ old('prescription') }}</textarea>
-                            </div>
-                        
-                            <!-- Submit Button -->
-                            <div class="flex items-center justify-end mt-6">
-                                <x-button class="ml-4">
-                                    {{ __('Submit') }}
-                                </x-button>
-                            </div>
-                        </form>
-                        
-                        <!-- End Medical Form -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </x-app-layout>
     
-</x-app-layout>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery-migrate-3.0.0.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/colors.js"></script>
+    <script src="js/slicknav.min.js"></script>
+    <script src="js/owl-carousel.js"></script>
+    <script src="js/magnific-popup.js"></script>
+    <script src="js/facnybox.min.js"></script>
+    <script src="js/waypoints.min.js"></script>
+    <script src="js/jquery-counterup.min.js"></script>
+    <script src="js/finalcountdown.min.js"></script>
+    <script src="js/niceselect.js"></script>
+    <script src="js/ytplayer.min.js"></script>
+    <script src="js/scrollup.js"></script>
+    <script src="js/onepage-nav.min.js"></script>
+    <script src="js/easing.js"></script>
+    <script src="js/active.js"></script>
+</body>
+</html>
+ 

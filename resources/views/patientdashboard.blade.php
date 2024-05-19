@@ -14,4 +14,17 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+    @foreach (Auth::user()->notifications as $notification)
+
+    <h1>{{$notification->data['data']}} </h1>
+
+    
+        
+    @endforeach
+    <button><a href="{{ route('medicament') }}">Medicament</a></button>
+    
+ 
+    <form action="{{ route('chatify') }}" method="GET">
+        <button type="submit" class="btn btn-primary">Go to Chatify</button>
+    </form>
+    </x-app-layout>

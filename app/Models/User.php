@@ -53,9 +53,15 @@ class User extends Authenticatable
         if ($this->hasRole('admin')) {
             return 'admindashboard';
         } elseif ($this->hasRole('patient')) {
+
             return 'patientdashboard';
-        } elseif ($this->hasRole('doctore')) { // Corrected role name
-            return 'doctordashboard';
+        } elseif ($this->hasRole('doctore')) { 
+            if(auth()->user()->first_time_login){
+                return 'doc';
+            }
+            else{
+            return 'doctordashboard';}
+
         }
     }
 

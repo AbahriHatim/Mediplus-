@@ -10,7 +10,7 @@ class DetailsDoctor extends Model
     use HasFactory;
 
     protected $table = 'details_doctors';
-
+  
     // Define the attributes that are mass assignable
     protected $fillable = [
         'name',
@@ -22,6 +22,7 @@ class DetailsDoctor extends Model
         'state',
         'country',
         'postal_code',
+      
     ];
 
    

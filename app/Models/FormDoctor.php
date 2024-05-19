@@ -11,7 +11,7 @@ class FormDoctor extends Model
     protected $table = 'medical_forms';
 
     protected $fillable = [
-        'patient_id', // Add patient_id to the fillable array
+        'patient_id', 
         'patient_name',
         'date_of_birth',
         'gender',
@@ -26,7 +26,11 @@ class FormDoctor extends Model
     {
         return $this->belongsTo(DetailsDoctor::class, 'doctor_id');
     }
-    
+      // Define the relationship with the patient
+      public function patient()
+      {
+          return $this->belongsTo(User::class, 'patient_id');
+      }
     
     
 }

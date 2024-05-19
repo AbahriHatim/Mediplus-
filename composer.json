@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
+        "aws/aws-sdk-php": "^3.306",
         "barryvdh/laravel-dompdf": "^2.1",
         "dompdf/dompdf": "^2.0",
         "fruitcake/laravel-cors": "^2.0",
@@ -13,10 +14,15 @@
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
+        "mailersend/laravel-driver": "1.x-dev",
         "munafio/chatify": "^1.6",
         "pusher/pusher-php-server": "^7.2",
         "santigarcor/laratrust": "^7.2",
-        "spatie/laravel-permission": "^5.11"
+        "spatie/laravel-permission": "^5.11",
+        "symfony/http-client": "^5.4",
+        "symfony/mailgun-mailer": "^5.4",
+        "symfony/mime": "^5.4",
+        "symfony/postmark-mailer": "^5.4"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
@@ -62,7 +68,10 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true

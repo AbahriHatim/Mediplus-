@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Notifications\NewBillWasWritten;
 use Illuminate\Http\Request;
-use App\Models\DetailsDoctor; // Import the DetailsDoctor model
-use App\Models\User; 
-use App\Models\FormDoctor; 
+use App\Models\DetailsDoctor;
+use App\Models\User;
+use App\Models\FormDoctor;
+use App\Models\PdfFile;
 use Illuminate\Support\Facades\Response;
-
-
-
-use \PDF;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
+use PDF;
 
 class DoctorController extends Controller
 {
@@ -21,115 +22,191 @@ class DoctorController extends Controller
 
     public function insertDetails(Request $request)
     {
+        // Validate input data
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:details_doctors,email',
-            // Add more validation rules for other fields
+            'phone' => 'required|string|max:15',
+            'specialization' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
+            'postal_code' => 'required|string|max:20',
         ]);
-
+    
+    
+    
         // Create a new DetailsDoctor instance
         $detailsDoctor = new DetailsDoctor([
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
-            'phone' => $request->phone,
-            'specialization' => $request->specialization,
-            'address' => $request->address,
-            'city' => $request->city,
-            'state' => $request->state,
-            'country' => $request->country,
-            'postal_code' => $request->postal_code,
+            'phone' => $validatedData['phone'],
+            'specialization' => $validatedData['specialization'],
+            'address' => $validatedData['address'],
+            'city' => $validatedData['city'],
+            'state' => $validatedData['state'],
+            'country' => $validatedData['country'],
+            'postal_code' => $validatedData['postal_code'],
+         // Store the image path in the 'image' column
         ]);
-
+    
         // Associate the DetailsDoctor with the authenticated user
         $detailsDoctor->user_id = auth()->id();
-
-        // Save the DetailsDoctor to the database
+    
+        // Save DetailsDoctor instance
         $detailsDoctor->save();
-
+    
+        // Update first_time_login to false for the authenticated user
+        $user = auth()->user();
+        $user->first_time_login = false;
+        $user->save();
+    
         // Redirect the user
-        return redirect()->route('doctordashboard');
+        return redirect()->route('doctordashboard')->with('success', 'Details added successfully');
     }
+    
 
     public function index()
     {
-        // Fetch patients and doctors separately
+        // Fetch patients separately
         $patients = User::whereHas('roles', function ($query) {
             $query->where('name', 'patient');
         })->get();
-    
-        // Ensure $patients and $doctors are initialized even if there are no results
-        $patients = $patients ?: [];
-    
-        return view('doctordashboard', compact('patients'));
+
+        return view('doctor.form', compact('patients'));
     }
-    
+
     public function addForm($patientId)
     {
-        // Check if the selected patient exists
         $patient = User::findOrFail($patientId);
-    
-        // Fetch all patients
+
+        // Fetch patients to pass to the view
         $patients = User::whereHas('roles', function ($query) {
             $query->where('name', 'patient');
         })->get();
-    
-        return view('doctordashboard', ['patient' => $patient, 'patients' => $patients]);
+
+        // Pass $patients variable to the view
+        return view('doctor.formTab', ['patientId' => $patientId, 'patients' => $patients]);
     }
-    
-    
- 
-    public function insertForm(Request $request)
+
+    public function insertForm(Request $request, $patientId)
     {
         $validatedData = $request->validate([
             'patient_id' => 'required|exists:users,id',
+            'patient_name' => 'required|string|max:255',
+            'date_of_birth' => 'required|date',
+            'gender' => 'required|string|max:10',
+            'address' => 'required|string|max:255',
             'symptoms' => 'required|string',
             'diagnosis' => 'required|string',
             'treatment_plan' => 'required|string',
             'prescription' => 'nullable|string',
         ]);
-    
+
         // Retrieve the ID of the logged-in doctor
         $doctorId = auth()->id();
-    
-        // Create a new MedicalForm instance
+
+        // Create a new FormDoctor instance
         $medicalForm = new FormDoctor([
             'patient_id' => $validatedData['patient_id'],
-            'patient_name' => $request->patient_name,
-            'date_of_birth' => $request->date_of_birth,
-            'gender' => $request->gender,
-            'address' => $request->address,
+            'patient_name' => $validatedData['patient_name'],
+            'date_of_birth' => $validatedData['date_of_birth'],
+            'gender' => $validatedData['gender'],
+            'address' => $validatedData['address'],
             'symptoms' => $validatedData['symptoms'],
             'diagnosis' => $validatedData['diagnosis'],
             'treatment_plan' => $validatedData['treatment_plan'],
             'prescription' => $validatedData['prescription'],
             'doctor_id' => $doctorId, // Assign the ID of the logged-in doctor
         ]);
-    
+
         // Save the MedicalForm to the database
         $medicalForm->save();
-    
+
         // Generate the PDF using the newly created medical form
-        $pdf = $this->generatePDF($medicalForm->id);
-    
-        // Return the PDF as a downloadable file or inline display
-        return $pdf;
+        $pdfData = $this->generatePDF($medicalForm);
+
+        // Save the PDF to storage
+        $pdfFileName = 'medical_form_' . $medicalForm->id . '.pdf'; // Set the file name
+        Storage::put('pdf/' . $pdfFileName, $pdfData);
+
+        // Create a new PdfFile instance
+        $pdfFile = new PdfFile([
+            'file_name' => $pdfFileName, // Set the file name
+            'file_data' => $pdfData, // Store the binary data of the PDF
+            'doctor_id' => $doctorId,
+            'patient_id' => $validatedData['patient_id'],
+        ]);
+
+        $pdfFile->save();
+
+        $user = User::find($patientId);
+        $user->notify(new NewBillWasWritten($patientId));
+
+        $this->sendEmailWithAttachment($pdfFileName, $pdfData, 'hatimabahri9@gmail.com');
+
+        // Download the PDF
+        return response()->streamDownload(function () use ($pdfData) {
+            echo $pdfData;
+        }, $pdfFileName);
     }
-    
-    
-    public function generatePDF($formId)
+
+    public function generatePDF($medicalForm)
     {
-        // Retrieve the medical form data from the database
-        $medicalForm = FormDoctor::findOrFail($formId);
-    
         // Pass the medical form data to the PDF view
         $data = [
             'medicalForm' => $medicalForm,
         ];
-    
-        // Generate the PDF using the populated template
+
         $pdf = PDF::loadView('medical_form_pdf', $data);
-    
-        return $pdf->download('medical_form.pdf'); // Change to download for file download
-    
+        return $pdf->output(); // Output the binary data of the PDF
     }
-}    
+
+    public function sendEmailWithAttachment($fileName, $fileData, $recipientEmail)
+    {
+        $mailData = [
+            'fromEmail' => 'hatimabahri9@gmail.com', // Set your email here
+            'fromName' => 'Your Name', // Set your name here
+            'subject' => 'Medical Form',
+            'body' => 'Please find attached the medical form.', // You can customize the email body here
+            'recipientEmail' => $recipientEmail,
+            'fileName' => $fileName,
+            'fileData' => $fileData,
+        ];
+
+        Mail::send('email-template', $mailData, function ($message) use ($mailData) {
+            $message->from($mailData['fromEmail'], $mailData['fromName']);
+            $message->to($mailData['recipientEmail']);
+            $message->subject($mailData['subject']);
+            $message->setBody($mailData['body']); // Set email body
+            $message->attachData($mailData['fileData'], $mailData['fileName'], [
+                'mime' => 'application/pdf',
+            ]);
+        });
+
+        // Log any errors that occur during email sending
+        if (count(Mail::failures()) > 0) {
+            foreach (Mail::failures() as $failure) {
+                \Log::error('Failed to send email to: ' . $failure);
+            }
+        }
+
+        return redirect()->back()->with('success', 'Email sent!');
+    }
+
+    public function searchBarPatient(Request $request)
+    {
+        $search = $request->input('search');
+
+        // Perform your search logic here
+        $patients = User::where('name', 'like', '%' . $search . '%')
+            ->whereHas('roles', function ($query) {
+                $query->where('name', 'patient');
+            })
+            ->get();
+
+        // Pass the search results to the view
+        return view('doctor.form', compact('patients'));
+    }
+}

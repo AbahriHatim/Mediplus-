@@ -11,7 +11,7 @@
                 <div class="p-6 bg-white border-b border-gray-200">
                     You're logged in as doctor!
                     <!-- Doctor Details Form -->
-                    <form method="POST" action="{{ route('insertDetails') }}">
+                    <form method="POST" action="{{ route('insertDetails') }}" enctype="multipart/form-data">
                         @csrf
 
                         <!-- Name -->
@@ -76,6 +76,12 @@
 
                             <x-input id="postal_code" class="block mt-1 w-full" type="text" name="postal_code" :value="old('postal_code')" />
                         </div>
+
+                        <!-- Profile Image -->
+               
+                            <x-label for="image" :value="__('Profile Image')" />
+                            <input type="file" name="image" id="image" :value="old('Profile Image')" />
+                   
 
                         <div class="flex items-center justify-end mt-4">
                             <x-button class="ml-4">
