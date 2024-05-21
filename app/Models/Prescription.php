@@ -8,6 +8,7 @@ class Prescription extends Model
 {
     use HasFactory;
     protected $table = 'prescription';
+    protected $primaryKey = 'idMedicament';
     protected $fillable = [
         'idMedicament',
         'idUser',
@@ -18,6 +19,10 @@ class Prescription extends Model
     public function prescription()
     {
         return $this->hasMany(Prescription::class, 'idMedicament', 'idMedicine');
+    }
+    public function medicine()
+    {
+        return $this->belongsTo(Medicament::class, 'idMedicament');
     }
     
 }

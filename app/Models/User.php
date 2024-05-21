@@ -54,7 +54,10 @@ class User extends Authenticatable
             return 'admindashboard';
         } elseif ($this->hasRole('patient')) {
 
-            return 'patientdashboard';
+            if(auth()->user()->first_time_login){
+                return 'patientFirstLog';
+            }
+            else{return 'patientdashboard';}
         } elseif ($this->hasRole('doctore')) { 
             if(auth()->user()->first_time_login){
                 return 'doc';
@@ -65,6 +68,18 @@ class User extends Authenticatable
         }
     }
 
- 
+    public function prescriptions()
+    {
+        return $this->hasMany(Prescription::class, 'idUser');
+    }
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class, 'patient_id');
+    }
+
+    public function doctorAppointments()
+    {
+        return $this->hasMany(Appointment::class, 'doctor_id');
+    }
     
 }

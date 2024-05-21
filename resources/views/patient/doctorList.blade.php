@@ -5,16 +5,53 @@
        <meta http-equiv="X-UA-Compatible" content="IE=edge">
        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
        <title>Mediplus - Free Medical and Doctor Directory HTML Template</title>
-       <link rel="icon" href="img/favicon.png">
+       <link rel="icon" href="../img/favicon.png">
        <link href="https://fonts.googleapis.com/css?family=Poppins:200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
-       <link rel="stylesheet" href="css/bootstrap.min.css">
-       <link rel="stylesheet" href="css/normalize.css">
-       <link rel="stylesheet" href="style.css">
-       <link rel="stylesheet" href="css/responsive.css">
+       <link rel="stylesheet" href="../css/bootstrap.min.css">
+       <link rel="stylesheet" href="../css/normalize.css">
+       <link rel="stylesheet" href="../style.css">
+       <link rel="stylesheet" href="../css/responsive.css">
        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-       <link rel="stylesheet" href="css/icofont.css">
-		
-    </head>
+       <link rel="stylesheet" href="../css/icofont.css">
+    <style>  
+
+        .searchBar{
+         transform: translateX(30%);
+         font-size: 20px;
+        
+     }
+     .custom-table {
+     width: 100%;
+     border-collapse: collapse;
+    
+ }
+ 
+ .custom-table th {
+     background-color: #1a68b3;
+     color: white;
+ }
+ 
+ .custom-table th,
+ .custom-table td {
+     padding: 8px;
+     border: 1px solid #ddd;
+ }
+ 
+ .custom-table td {
+     text-align: left;
+ }
+ 
+ .custom-table tbody tr:nth-child(even) {
+     background-color: #f2f2f2;
+ }
+ 
+ .custom-table tbody tr:hover {
+     background-color: #ddd;
+ }
+ 
+  
+ 
+     </style>
 <body>
     <header class="header">
         <!-- Header Inner -->
@@ -25,8 +62,7 @@
                         <div class="col-lg-3 col-md-3 col-12">
                             <!-- Start Logo -->
                             <div class="logo">
-                                
-                                <a href="index.html"><img src="img/logo.png" alt="#"></a>
+                                <a href="index.html"><img src="../img/logo.png" alt="#"></a>
                             </div>
                             <!-- End Logo -->
                             <!-- Mobile Nav -->
@@ -38,7 +74,7 @@
                             <div class="main-menu" style="transform: translateX(-10%)">
                                 <nav class="navigation">
                                     <ul class="nav menu">
-                                        <li class="active"><a href="{{ route('patientdashboard') }}" style="text-decoration: none;">Home</a></li>
+                                        <li ><a href="{{ route('patientdashboard') }}" style="text-decoration: none;">Home</a></li>
                                         <li>
                                             <a style="text-decoration: none;">Notifications 
                                                 <span class="badge text-bg-secondary">{{ Auth::user()->unreadNotifications->count() }}</span>
@@ -51,14 +87,13 @@
                                                     <li><a href="{{ route('notifications.markAsRead') }}" style="text-decoration: none;">Mark all as read</a></li>
                                                 @endif
                                                 @if(Auth::user()->unreadNotifications->count() == 0)
-                                                <li><a style="text-decoration: none;">No notification</a></li>
+                                                    <li><a style="text-decoration: none;">No notification</a></li>
                                                 @endif
                                             </ul>
                                         </li>
-                                        
                                         <li><a href="{{ route('medicament') }}" style="text-decoration: none;">Medicament</a></li>
-                                        <li><a href="{{ route('DoctorListPa') }}" style="text-decoration: none;">Docotr List</a></li>
-                                       
+                                        <li class="active"><a href="{{ route('DoctorListPa') }}" style="text-decoration: none;">Docotr List</a></li>
+
                                         <li><a href="{{ route('chatify') }}" style="text-decoration: none;">Messenger <i class="fa fa-comment" aria-hidden="true"></i></a></li>
                                     </ul>
                                 </nav>
@@ -71,7 +106,7 @@
                                     @csrf
                                     <x-dropdown-link :href="route('logout')"
                                         onclick="event.preventDefault();
-                                        this.closest('form').submit();" class="btn" style="background-color: #1a68b3; ">
+                                        this.closest('form').submit();" class="btn" style="background-color: #1a68b3;">
                                         {{ __('Log Out') }}
                                     </x-dropdown-link>
                                 </form>
@@ -84,27 +119,50 @@
         </div>
         <!--/ End Header Inner -->
     </header>
-  
-    <script src="js/jquery.min.js"></script>
-    <script src="js/jquery-migrate-3.0.0.js"></script>
-    <script src="js/jquery-ui.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/colors.js"></script>
-    <script src="js/slicknav.min.js"></script>
-    <script src="js/owl-carousel.js"></script>
-    <script src="js/magnific-popup.js"></script>
-    <script src="js/facnybox.min.js"></script>
-    <script src="js/waypoints.min.js"></script>
-    <script src="js/jquery-counterup.min.js"></script>
-    <script src="js/finalcountdown.min.js"></script>
-    <script src="js/niceselect.js"></script>
-    <script src="js/ytplayer.min.js"></script>
-    <script src="js/scrollup.js"></script>
-    <script src="js/onepage-nav.min.js"></script>
-    <script src="js/easing.js"></script>
-    <script src="js/active.js"></script>
+    <div class="container">
+        <h1>Doctor List</h1>
+
+        <!-- Search Form -->
+        <form method="GET" action="{{ route('searchDoctors') }}" class="mb-4">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control" placeholder="Search by name or specialization" value="{{ request('search') }}">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
+
+        <!-- Doctor Table -->
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Specialization</th>
+                    <th scope="col">Profile</th>
+                    <th scope="col">Appointment</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($doctors as $doctor)
+                    <tr>
+                        <td scope="row">{{ $doctor->id }}</td>
+                        <td>{{ $doctor->name }}</td>
+                        <td>{{ $doctor->specialization }}</td>
+                        <td>
+                            <a href="{{ route('doctorProfile', ['id' => $doctor->id]) }}" style="background-color: #1a68b3;" class="btn btn-info">View Profile</a>
+                        </td>   
+                        <td>
+                            <form action="{{ route('appointmentPa', ['doctor_id' => $doctor->id]) }}" method="GET">
+                                @csrf
+                                <input type="hidden" name="doctor_id" value="{{ $doctor->id }}">
+                                <button type="submit">Book Appointment</button>
+                            </form>
+                            
+                                       
+                        </td>   
+                     </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>
-  
- 

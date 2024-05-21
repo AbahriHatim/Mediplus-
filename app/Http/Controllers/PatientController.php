@@ -4,6 +4,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Medicament;
 use App\Models\Prescription;
+use App\Models\User;
+use App\Models\DetailsDoctor;
+use App\Models\DetailPatient;
+use App\Models\Appointment;
+
 use Illuminate\Support\Facades\Auth;
 
 class PatientController extends Controller
@@ -17,7 +22,7 @@ class PatientController extends Controller
     public function addPrescription(Request $request)
     {
         $request->validate([
-            'uri' => 'required|string|max:255', // corrected the validation rule
+            'uri' => 'required|string|max:255',
             'dosage' => 'required|string|max:45',
             'startDate' => 'required|date',
             'endDate' => 'required|date|after_or_equal:startDate',
@@ -38,7 +43,6 @@ class PatientController extends Controller
         $prescription->endDate = $request->input('endDate');
         $prescription->save();
 
-        // Redirect back to the medicament page after adding prescription
         return redirect()->route('medicament');
     }
 
@@ -46,13 +50,179 @@ class PatientController extends Controller
     {
         $userId = auth()->id();
         $prescribedMedicines = Prescription::where('idUser', $userId)->get();
-        $prescribedMedicineIds = $prescribedMedicines->pluck('idMedicament')->toArray();
+        $prescribedMedicineIds = $prescribedMedicines->pluck('idMedicament');
 
-        if (empty($prescribedMedicineIds)) {
-            return [];
+        if ($prescribedMedicineIds->isEmpty()) {
+            return collect(); // Return an empty collection if no medicines are found
         }
 
         $medicines = Medicament::whereIn('idMedicine', $prescribedMedicineIds)->get();
         return $medicines;
     }
+    public function doctorList()
+    {
+        $doctors = DetailsDoctor::all();
+        return view('patient.doctorList', compact('doctors'));
+    }
+
+    public function searchDoctors(Request $request)
+    {
+        $query = DetailsDoctor::query();
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'LIKE', "%{$search}%")
+                  ->orWhere('specialization', 'LIKE', "%{$search}%");
+            });
+        }
+
+        $doctors = $query->get();
+        return view('patient.doctorList', compact('doctors'));
+    }
+    public function profileDoctor($id)
+    {
+        $doctor = DetailsDoctor::findOrFail($id);
+        return view('patient.doctorProfile', compact('doctor'));
+    }
+    
+    public function addDetails()
+    {
+        return view('patientdashboard');
+    }
+
+    public function insertDetails(Request $request)
+    {
+        // Validate input data
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:details_patients,email',
+            'phone' => 'required|string|max:15',
+            'address' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
+            'postal_code' => 'required|string|max:20',
+        ]);
+
+        // Create a new DetailPatient instance
+        $detailPatient = new DetailPatient([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'phone' => $validatedData['phone'],
+            'address' => $validatedData['address'],
+            'city' => $validatedData['city'],
+            'state' => $validatedData['state'],
+            'country' => $validatedData['country'],
+            'postal_code' => $validatedData['postal_code'],
+        ]);
+
+        // Associate the DetailPatient with the authenticated user
+        $detailPatient->user_id = auth()->id();
+
+        // Save DetailPatient instance
+        $detailPatient->save();
+
+        // Update first_time_login to false for the authenticated user
+        $user = auth()->user();
+        $user->first_time_login = false;
+        $user->save();
+
+        // Redirect the user
+        return redirect()->route('patientdashboard')->with('success', 'Details added successfully');
+    }
+    public function profile()
+    {
+        $patient = DetailPatient::where('user_id', auth()->id())->first();
+        return view('patient.profile', compact('patient'));
+    }
+    public function editProfile()
+    {
+        $patient = DetailPatient::where('user_id', auth()->id())->first();
+        return view('patient.edite', compact('patient'));
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $request->validate([
+            'phone' => 'required|string|max:15',
+            'email' => 'required|string|email|max:255',
+            'address' => 'required|string|max:255',
+            'city' => 'required|string|max:100',
+            'state' => 'required|string|max:100',
+            'country' => 'required|string|max:100',
+            'postal_code' => 'required|string|max:10',
+        ]);
+
+        $patient = DetailPatient::where('user_id', auth()->id())->first();
+
+        $patient->update([
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'address' => $request->address,
+            'city' => $request->city,
+            'state' => $request->state,
+            'country' => $request->country,
+            'postal_code' => $request->postal_code,
+        ]);
+
+        return redirect()->route('profilePa')->with('success', 'Profile updated successfully.');
+    }
+    public function deleteMedi($idMedicament)
+    {
+        $medcine = Prescription::find($idMedicament)->delete();
+        return redirect()->route('medicament')->with('success', 'User deleted successfully');
+    }
+  
+  
+    public function appointment($doctor_id){
+        return view('patient.appointment', ['doctor_id' => $doctor_id]);
+    }
+
+
+    public function store(Request $request, $doctor_id)
+    {
+        $request->validate([
+            'appointment_time' => 'required|date|after:now',
+            'purpose' => 'nullable|string|max:255',
+        ]);
+    
+        $requestedAppointmentTime = new \DateTime($request->appointment_time);
+    
+        $existingAppointmentsCount = Appointment::where('doctor_id', $doctor_id)
+            ->where('appointment_time', $requestedAppointmentTime)
+            ->count();
+    
+        if ($existingAppointmentsCount > 0) {
+            return redirect()->route('DoctorListPa')->withErrors(['appointment_time' => 'This time is already booked for the selected doctor.']);
+        }
+    
+        $nextAppointmentTime = Appointment::where('doctor_id', $doctor_id)
+            ->where('appointment_time', '>', $requestedAppointmentTime)
+            ->orderBy('appointment_time')
+            ->first();
+    
+        if ($nextAppointmentTime) {
+            $nextAppointmentTime = new \DateTime($nextAppointmentTime->appointment_time);
+            $diff = $nextAppointmentTime->diff($requestedAppointmentTime);
+            if ($diff->i < 30) {
+                $requestedAppointmentTime = $nextAppointmentTime->add(new \DateInterval('PT30M'));
+            }
+        }
+    
+        $appointment = new Appointment([
+            'patient_id' => auth()->id(),
+            'doctor_id' => $doctor_id,
+            'appointment_time' => $requestedAppointmentTime->format('Y-m-d H:i:s'),
+            'purpose' => $request->purpose,
+        ]);
+    
+        $appointment->save();
+    
+        return redirect()->route('DoctorListPa');
+    }
+    
+    
+    
+   
 }

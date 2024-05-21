@@ -11,6 +11,7 @@ use App\Models\PdfFile;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
+use App\Models\Prescription;
 use PDF;
 
 class DoctorController extends Controller
@@ -209,4 +210,68 @@ class DoctorController extends Controller
         // Pass the search results to the view
         return view('doctor.form', compact('patients'));
     }
+    public function getTreatmentDetails($patientId)
+    {
+        // Fetch prescriptions for the specified patient
+        $prescriptions = Prescription::where('idUser', $patientId)->with('medicine')->get();
+    
+        // Map the prescriptions to the desired format for treatment details
+        $treatmentDetails = $prescriptions->map(function ($prescription) {
+            return [
+                'idMedicament' => $prescription->medicine->idMedicine,
+                'name' => $prescription->medicine->name,
+                'dosage' => $prescription->dosage,
+                'startDate' => $prescription->startDate instanceof \DateTime ? $prescription->startDate->format('Y-m-d') : $prescription->startDate,
+                'endDate' => $prescription->endDate instanceof \DateTime ? $prescription->endDate->format('Y-m-d') : $prescription->endDate,
+            ];
+        });
+    
+        // Pass the $treatmentDetails variable to the view
+        return view('doctor.traitment', ['treatmentDetails' => $treatmentDetails]);
+    }
+    
+    
+    
+    //profil
+    public function profile()
+    {
+        $doctor = DetailsDoctor::where('user_id', auth()->id())->first();
+        return view('doctor.profile', compact('doctor'));
+    }
+  
+    public function editProfile()
+    {
+        $doctor = DetailsDoctor::where('user_id', auth()->id())->first();
+        return view('doctor.edite', compact('doctor'));
+    }
+    public function updateProfile(Request $request)
+    {
+        // Validate input data
+        $request->validate([
+            'phone' => 'required|string|max:15',
+            'email' => 'required|string|email|max:255',
+            'address' => 'required|string|max:255',
+            'city' => 'required|string|max:100',
+            'state' => 'required|string|max:100',
+            'country' => 'required|string|max:100',
+            'postal_code' => 'required|string|max:10',
+        ]);
+
+        // Update doctor details
+        $doctor = DetailsDoctor::where('user_id', auth()->id())->first();
+        $doctor->update([
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'address' => $request->address,
+            'city' => $request->city,
+            'state' => $request->state,
+            'country' => $request->country,
+            'postal_code' => $request->postal_code,
+        ]);
+
+        // Redirect back with success message
+        return redirect()->route('doctor.profile')->with('success', 'Profile updated successfully');
+    }    
+
+
 }

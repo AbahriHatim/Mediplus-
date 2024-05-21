@@ -31,6 +31,13 @@
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="css/responsive.css">
+    <style>
+.image{
+    height: 500px;
+    width: 500px;
+    transform: translate(1000px, 100px);
+}
+    </style>
 </head>
 <body>
     <header class="header">
@@ -72,7 +79,7 @@
                                         {{ __('Log Out') }}
                                     </x-dropdown-link>
                                 </form>
-                                <a href="{{ route('register') }}" style="background-color: #1a68b3; transform: translate(-120%,-100%); padding-top: 8px;" class="btn">Profile</a>
+                                <a href="{{ route('profile') }}" style="background-color: #1a68b3; transform: translate(-120%, -100%); padding-top: 8px" class="btn">Profile</a>
                             </div>
                         </div>
                     </div>
@@ -86,32 +93,8 @@
         {{ __('Doctor Dashboard') }}
     </h2>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
-                    You're logged in as doctor!
-                    <!-- Doctor Details Form -->
-                    <!-- End Doctor Details Form -->
-                </div>
-            </div>
-        </div>
-    </div>
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Name</th>
-                <th scope="col">Email</th>
-                <th scope="col">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Table Data -->
-        </tbody>
-    </table>
+    <img src="images/doctorDash.jpg" alt="doctor" class="image">
     
     <script src="js/jquery.min.js"></script>
     <script src="js/jquery-migrate-3.0.0.js"></script>

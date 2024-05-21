@@ -5,6 +5,8 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\NotificationController;
+
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -34,6 +36,9 @@ Route::get('/admindashboard', function () {
 Route::get('/patientdashboard', function () {
     return view('patientdashboard');
 })->middleware(['auth', 'role:patient'])->name('patientdashboard');
+Route::get('/patientFirstLog', function () {
+    return view('patientFirstLog');
+})->middleware(['auth', 'role:patient'])->name('patientFirstLog');
 
 Route::get('/doctordashboard', function () {
     return view('doctordashboard');
@@ -61,11 +66,18 @@ Route::get('/doctor/list', [DoctorController::class, 'index'])->name('PatientLis
 Route::get('/doctor/form/{patientId}', [DoctorController::class, 'addForm'])->name('addForm');
 Route::get('/doctor/form', [DoctorController::class, 'searchBarPatient'])->name('searchBarPatientDoc');
 
+Route::get('/doctor/traitment/{patientId}', [DoctorController::class, 'getTreatmentDetails'])->name('treatmentDetails');
+Route::get('/doctor/profile', [DoctorController::class, 'profile'])->name('profile');
+Route::get('/doctor/edit', [DoctorController::class, 'editProfile'])->name('editProfile');
+Route::post('/doctor/update', [DoctorController::class, 'updateProfile'])->name('updateProfile');
+
 
 // Route to handle the insertion of a medical form
 // Route to handle the insertion of a medical form
 Route::post('/doctor/form/formTab/{patientId}', [DoctorController::class, 'insertForm'])->name('insertMedicalForm');
 Route::get('/doctor/form/{formId}/generate-pdf', [DoctorController::class, 'generatePDF']);
+
+
 
 Route::post('/send', [EmailController::class, 'send'])->name('send-email');
 Route::post('/send', [EmailController::class, 'sendEmailWithAttachment'])->name('sendEmailWithAttachment');
@@ -76,3 +88,19 @@ Route::post('/patient/medicament', [PatientController::class, 'addPrescription']
 Route::get('/patient/medicament', [PatientController::class, 'getPrescribedMedicines'])->name('patient.medicines');
 
 Route::get('/patient/medicament', [PatientController::class, 'medicament'])->name('medicament');
+Route::delete('/patient/medicament/{idMedicament}', [PatientController::class, 'deleteMedi'])->name('deleteMedi');
+
+
+
+Route::get('/notifications/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+Route::get('/patient/doctorList', [PatientController::class, 'doctorList'])->name('DoctorListPa');
+Route::get('/patient/searchDoctors', [PatientController::class, 'searchDoctors'])->name('searchDoctors');
+Route::get('/patient/doctorProfile/{id}', [PatientController::class, 'profileDoctor'])->name('doctorProfile');
+Route::post('/patient/details', [PatientController::class, 'insertDetails'])->name('insertDetailsPa');
+Route::get('/doctor/details', [PatientController::class, 'addDetails'])->name('addDetailsPa');
+Route::get('/patient/profile', [PatientController::class, 'profile'])->name('profilePa');
+
+Route::get('/patient/edite', [PatientController::class, 'editProfile'])->name('editProfilePa');
+Route::post('/patient/update', [PatientController::class, 'updateProfile'])->name('updateProfilePa');
+Route::get('/patient/appointment/{doctor_id}', [PatientController::class, 'appointment'])->name('appointmentPa');
+Route::post('/patient/appointment/{doctor_id}', [PatientController::class, 'store'])->name('appointmentsStore');
