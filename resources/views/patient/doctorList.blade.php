@@ -119,14 +119,14 @@
         </div>
         <!--/ End Header Inner -->
     </header>
-    <div class="container">
+    <div class="container" style="widht:1700px">
         <h1>Doctor List</h1>
 
         <!-- Search Form -->
         <form method="GET" action="{{ route('searchDoctors') }}" class="mb-4">
             <div class="input-group">
                 <input type="text" name="search" class="form-control" placeholder="Search by name or specialization" value="{{ request('search') }}">
-                <button type="submit" class="btn btn-primary">Search</button>
+                <button type="submit" class="btn btn-primary" style="background-color: rgb(74, 157, 235); ">Search</button>
             </div>
         </form>
 
@@ -144,17 +144,17 @@
             <tbody>
                 @foreach ($doctors as $doctor)
                     <tr>
-                        <td scope="row">{{ $doctor->id }}</td>
+                        <td scope="row">{{ $doctor->user_id }}</td>
                         <td>{{ $doctor->name }}</td>
                         <td>{{ $doctor->specialization }}</td>
                         <td>
-                            <a href="{{ route('doctorProfile', ['id' => $doctor->id]) }}" style="background-color: #1a68b3;" class="btn btn-info">View Profile</a>
+                            <a href="{{ route('doctorProfile', ['id' => $doctor->id]) }}" style="background-color: rgb(74, 157, 235); color:white;" class="btn btn-info">View Profile</a>
                         </td>   
                         <td>
-                            <form action="{{ route('appointmentPa', ['doctor_id' => $doctor->id]) }}" method="GET">
+                            <form action="{{ route('appointmentPa', ['doctor_id' => $doctor->user_id]) }}" method="GET">
                                 @csrf
-                                <input type="hidden" name="doctor_id" value="{{ $doctor->id }}">
-                                <button type="submit">Book Appointment</button>
+                                <input type="hidden" name="doctor_id" value="{{ $doctor->user_id }}">
+                                <button type="submit" style="background-color: rgb(74, 157, 235); color:white;" class="btn btn-info">Book Appointment</button>
                             </form>
                             
                                        

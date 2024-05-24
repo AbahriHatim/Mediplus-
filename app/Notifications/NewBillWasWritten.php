@@ -1,19 +1,23 @@
 <?php
+
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Str;
 
-class NewBillWasWritten extends Notification
+class NewBillWasWritten extends Notification 
 {
     use Queueable;
-    protected $table = 'notifications';
+
+    protected $patientId;
 
     /**
      * Create a new notification instance.
      *
+     * @param int $patientId
      * @return void
      */
     public function __construct($patientId)
@@ -55,7 +59,9 @@ class NewBillWasWritten extends Notification
     public function toArray($notifiable)
     {
         return [
+            'id' => (string) Str::uuid(),
             'data' => 'Notification data here',
+            'patient_id' => $this->patientId,
             'notifiable_id' => $notifiable->id,
             'notifiable_type' => get_class($notifiable)
         ];

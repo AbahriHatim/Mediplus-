@@ -264,6 +264,8 @@ h2 span {
                                     <ul class="nav menu">
                                         <li><a href="{{ route('doctordashboard') }}" style="text-decoration: none;">Home</a></li>
                                         <li ><a href="{{ route('PatientListDo') }}" style="text-decoration: none;">Patient List</a></li>
+                                        <li ><a href="{{ route('showSchedule') }}" style="text-decoration: none;">Schedule</a></li>
+
                                         <li><a href="{{ route('chatify') }}" style="text-decoration: none;">Messageri <i class="fa fa-comment" aria-hidden="true"></i></a></li>
                                     </ul>
                                 </nav>

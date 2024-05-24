@@ -8,9 +8,8 @@ use App\Models\User;
 use App\Models\DetailsDoctor;
 use App\Models\DetailPatient;
 use App\Models\Appointment;
-
+use App\Notifications\AppointmentBooked;
 use Illuminate\Support\Facades\Auth;
-
 class PatientController extends Controller
 {
     public function medicament()
@@ -183,44 +182,41 @@ class PatientController extends Controller
     public function store(Request $request, $doctor_id)
     {
         $request->validate([
-            'appointment_time' => 'required|date|after:now',
+            'appointment_date' => 'required|date|after:today',
+            'appointment_time' => 'required|date_format:H:i',
             'purpose' => 'nullable|string|max:255',
         ]);
     
-        $requestedAppointmentTime = new \DateTime($request->appointment_time);
+        $appointmentDateTime = \DateTime::createFromFormat('Y-m-d H:i', $request->appointment_date . ' ' . $request->appointment_time);
+    
+        if (!$appointmentDateTime) {
+            return redirect()->back()->withErrors(['appointment_time' => 'The appointment time is not a valid date.']);
+        }
     
         $existingAppointmentsCount = Appointment::where('doctor_id', $doctor_id)
-            ->where('appointment_time', $requestedAppointmentTime)
+            ->where('appointment_time', $appointmentDateTime->format('Y-m-d H:i:s'))
             ->count();
     
         if ($existingAppointmentsCount > 0) {
-            return redirect()->route('DoctorListPa')->withErrors(['appointment_time' => 'This time is already booked for the selected doctor.']);
-        }
-    
-        $nextAppointmentTime = Appointment::where('doctor_id', $doctor_id)
-            ->where('appointment_time', '>', $requestedAppointmentTime)
-            ->orderBy('appointment_time')
-            ->first();
-    
-        if ($nextAppointmentTime) {
-            $nextAppointmentTime = new \DateTime($nextAppointmentTime->appointment_time);
-            $diff = $nextAppointmentTime->diff($requestedAppointmentTime);
-            if ($diff->i < 30) {
-                $requestedAppointmentTime = $nextAppointmentTime->add(new \DateInterval('PT30M'));
-            }
+            return redirect()->back()->withErrors(['appointment_time' => 'This time is already booked for the selected doctor.']);
         }
     
         $appointment = new Appointment([
             'patient_id' => auth()->id(),
             'doctor_id' => $doctor_id,
-            'appointment_time' => $requestedAppointmentTime->format('Y-m-d H:i:s'),
+            'appointment_time' => $appointmentDateTime->format('Y-m-d H:i:s'),
             'purpose' => $request->purpose,
         ]);
-    
+    $user = User::find($doctor_id);
+        $user->notify(new AppointmentBooked($doctor_id));
         $appointment->save();
     
-        return redirect()->route('DoctorListPa');
+        
+    
+        return redirect()->route('DoctorListPa')->with('success', 'Appointment booked successfully');
     }
+    
+    
     
     
     

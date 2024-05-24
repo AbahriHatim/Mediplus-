@@ -8,10 +8,12 @@ use App\Models\DetailsDoctor;
 use App\Models\User;
 use App\Models\FormDoctor;
 use App\Models\PdfFile;
+use App\Models\Appointment;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Prescription;
+use Illuminate\Support\Facades\Auth;
 use PDF;
 
 class DoctorController extends Controller
@@ -104,11 +106,9 @@ class DoctorController extends Controller
             'treatment_plan' => 'required|string',
             'prescription' => 'nullable|string',
         ]);
-
-        // Retrieve the ID of the logged-in doctor
+    
         $doctorId = auth()->id();
-
-        // Create a new FormDoctor instance
+      
         $medicalForm = new FormDoctor([
             'patient_id' => $validatedData['patient_id'],
             'patient_name' => $validatedData['patient_name'],
@@ -119,43 +119,41 @@ class DoctorController extends Controller
             'diagnosis' => $validatedData['diagnosis'],
             'treatment_plan' => $validatedData['treatment_plan'],
             'prescription' => $validatedData['prescription'],
-            'doctor_id' => $doctorId, // Assign the ID of the logged-in doctor
+            'doctor_id' => auth()->id(),
         ]);
-
-        // Save the MedicalForm to the database
+   
         $medicalForm->save();
-
+    
         // Generate the PDF using the newly created medical form
         $pdfData = $this->generatePDF($medicalForm);
-
-        // Save the PDF to storage
-        $pdfFileName = 'medical_form_' . $medicalForm->id . '.pdf'; // Set the file name
+    
+        $pdfFileName = 'medical_form_' . $medicalForm->id . '.pdf';
         Storage::put('pdf/' . $pdfFileName, $pdfData);
-
-        // Create a new PdfFile instance
+    
         $pdfFile = new PdfFile([
-            'file_name' => $pdfFileName, // Set the file name
-            'file_data' => $pdfData, // Store the binary data of the PDF
+            'file_name' => $pdfFileName,
+            'file_data' => $pdfData,
             'doctor_id' => $doctorId,
             'patient_id' => $validatedData['patient_id'],
         ]);
-
+    
         $pdfFile->save();
-
+    
         $user = User::find($patientId);
         $user->notify(new NewBillWasWritten($patientId));
-
+    
         $this->sendEmailWithAttachment($pdfFileName, $pdfData, 'hatimabahri9@gmail.com');
-
-        // Download the PDF
+    
         return response()->streamDownload(function () use ($pdfData) {
             echo $pdfData;
         }, $pdfFileName);
     }
-
+    
     public function generatePDF($medicalForm)
     {
+        
         // Pass the medical form data to the PDF view
+        $medicalForm->load('doctor');
         $data = [
             'medicalForm' => $medicalForm,
         ];
@@ -257,7 +255,6 @@ class DoctorController extends Controller
             'postal_code' => 'required|string|max:10',
         ]);
 
-        // Update doctor details
         $doctor = DetailsDoctor::where('user_id', auth()->id())->first();
         $doctor->update([
             'phone' => $request->phone,
@@ -269,9 +266,29 @@ class DoctorController extends Controller
             'postal_code' => $request->postal_code,
         ]);
 
-        // Redirect back with success message
         return redirect()->route('doctor.profile')->with('success', 'Profile updated successfully');
     }    
 
-
+    public function showSchedule(Request $request)
+    {
+        $doctor_id = Auth::id();
+    
+        // Retrieve all appointments for the doctor
+        $appointments = Appointment::where('doctor_id', $doctor_id)
+            ->with('patient:id,name') 
+            ->get();
+    
+    
+        $events = [];
+        foreach ($appointments as $appointment) {
+            $events[] = [
+                'title' => $appointment->patient->name . ' (ID: ' . $appointment->patient_id . ')',
+                'start' => $appointment->appointment_time->format('Y-m-d H:i:s'), // Format start time
+            ];
+        }
+    
+    
+        return view('doctor.schedule', compact('events'));
+    }
+    
 }

@@ -335,7 +335,7 @@ h2 span {
                         </div>
                         <div class="card-body">
                           <p class="mb-0">
-                            <strong class="pr-1">Doctor Id:</strong>{{ $doctor->id
+                            <strong class="pr-1">Doctor Id:</strong>{{ $doctor->user_id
                             }}
                           </p>
                           <p class="mb-0">

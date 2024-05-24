@@ -22,7 +22,8 @@ use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return view('index');
-});
+})->name('homePage');
+
 
 
 Route::get('/dashboard', function () {
@@ -51,13 +52,15 @@ require __DIR__.'/auth.php';
 Route::get('/admin/addDoc', [AdminController::class, 'addDoctor'])->name('admin.addDoctor');
 Route::post('/admin/addDoc', [AdminController::class, 'insertDoctor'])->name('admin.insertDoctor');
 Route::get('/admin/Patientlist', [AdminController::class, 'index'])->name('PatientList');
-Route::get('/admin/Doctorlist', [AdminController::class, 'doctorList'])->name('DoctorList');
+Route::get('/admin/Doctorlist', [AdminController::class, 'doctorList'])->name('DoctorListAd');
 Route::get('/edit/{id}', [AdminController::class, 'editUser'])->name('editUser');
 Route::post('/update/{id}', [AdminController::class, 'updateUser'])->name('updateUser');
 Route::delete('/delete/{id}', [AdminController::class, 'deleteUser'])->name('deleteUser');
 Route::get('/admin/addDoc', [AdminController::class, 'addDoctor'])->name('addDoctor');
-Route::get('/admin/search', [AdminController::class, 'searchBarDoctor'])->name('searchBarDoctor');
-Route::get('/admin/search', [AdminController::class, 'searchBarPatient'])->name('searchBarPatient');
+Route::get('/admin/Invoice', [AdminController::class, 'listInvoice'])->name('listInvoice');
+Route::get('download/invoice/{id}', [AdminController::class, 'download'])->name('download.invoice');
+Route::get('view/invoice/{id}', [AdminController::class, 'view'])->name('view.invoice');
+
 
 /*Doctor*/
 Route::get('/doctor/details', [DoctorController::class, 'addDetails'])->name('addDetails');
@@ -70,6 +73,7 @@ Route::get('/doctor/traitment/{patientId}', [DoctorController::class, 'getTreatm
 Route::get('/doctor/profile', [DoctorController::class, 'profile'])->name('profile');
 Route::get('/doctor/edit', [DoctorController::class, 'editProfile'])->name('editProfile');
 Route::post('/doctor/update', [DoctorController::class, 'updateProfile'])->name('updateProfile');
+Route::get('/doctor/schedule', [DoctorController::class, 'showSchedule'])->name('showSchedule');
 
 
 // Route to handle the insertion of a medical form

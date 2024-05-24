@@ -24,8 +24,9 @@ class FormDoctor extends Model
     ];
     public function doctor()
     {
-        return $this->belongsTo(DetailsDoctor::class, 'doctor_id');
+        return $this->belongsTo(DetailsDoctor::class, 'doctor_id', 'user_id');
     }
+    
       // Define the relationship with the patient
       public function patient()
       {

@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Appointment;
+use App\Models\PdfFile;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Storage;
 
 
 class AdminController extends Controller
@@ -39,7 +41,7 @@ class AdminController extends Controller
             // Handle the case where the role doesn't exist
         }
     
-        return redirect()->route('admindashboard');
+        return redirect()->route('addDoctor');
     }
     public function index()
     {
@@ -116,10 +118,30 @@ class AdminController extends Controller
     
         // Pass the search results to the view
         return view('admin/PatientList', compact('patients'));
+    }   
+
+
+    public function listInvoice(){
+        $listInvoice = PdfFile::all();
+        return view('admin/Invoice', compact('listInvoice'));
     }
-    
-    
-    
-       
-    
+
+
+public function download($id) {
+    $invoice = PdfFile::findOrFail($id);
+    $filename = $invoice->file_name;
+    $fileData = $invoice->file_data;
+
+    return response()->streamDownload(function () use ($fileData) {
+        echo $fileData;
+    }, $filename);
+}
+public function view($id) {
+    $invoice = PdfFile::findOrFail($id);
+    $filename = $invoice->file_name;
+    $fileData = $invoice->file_data;
+
+    return response($fileData)->header('Content-Type', 'application/pdf');
+}
+
 }

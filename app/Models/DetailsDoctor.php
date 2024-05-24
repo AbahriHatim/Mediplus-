@@ -22,8 +22,11 @@ class DetailsDoctor extends Model
         'state',
         'country',
         'postal_code',
-      
+    
     ];
 
-   
+    public function doctor()
+    {
+        return $this->belongsTo(User::class, 'doctor_id');
+    }
 }
