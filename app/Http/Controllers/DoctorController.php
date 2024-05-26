@@ -166,7 +166,7 @@ class DoctorController extends Controller
     {
         $mailData = [
             'fromEmail' => 'hatimabahri9@gmail.com', // Set your email here
-            'fromName' => 'Your Name', // Set your name here
+            'fromName' => 'Mediplus', // Set your name here
             'subject' => 'Medical Form',
             'body' => 'Please find attached the medical form.', // You can customize the email body here
             'recipientEmail' => $recipientEmail,

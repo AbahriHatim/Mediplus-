@@ -13,7 +13,27 @@
        <link rel="stylesheet" href="css/responsive.css">
        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
        <link rel="stylesheet" href="css/icofont.css">
-		
+		<style>
+            #patientDash{
+                height: 500px;
+                width: 500px;
+                transform: translate(800px,100px)
+            }
+            .text{
+                transform: translate(50px,-500px);
+            }
+          .text h1 {
+        font-size: 2.5rem; 
+        color: #333; 
+        margin-bottom: 10px; 
+    }
+
+    .text h2 {
+        font-size: 1.8rem; 
+        color: #666; 
+        font-style: italic;
+    }
+        </style>
     </head>
 <body>
     <header class="header">
@@ -84,6 +104,16 @@
         </div>
         <!--/ End Header Inner -->
     </header>
+    <img src="images/patientDash.jpg" id="patientDash" alt="">
+    <div class="text">
+        @php
+        use App\Models\DetailPatient;
+        $details = DetailPatient::where('user_id', Auth::id())->first();
+        $name = $details ? $details->name : 'No Name Found'; // Handle case when details are not found
+    @endphp  
+        <h1>{{ $name }}</h1>
+        <h2>Your health it's our first prioriti</h2>
+    </div>
   
     <script src="js/jquery.min.js"></script>
     <script src="js/jquery-migrate-3.0.0.js"></script>

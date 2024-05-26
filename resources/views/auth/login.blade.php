@@ -116,7 +116,7 @@
 											<input type="radio" name="options" id="admin" />
 											<div class="icon">
 												<img
-													src="vendors/images/briefcase.svg"
+													src="../../vendors/images/briefcase.svg"
 													class="svg"
 													alt=""
 												/>
@@ -128,7 +128,7 @@
 											<input type="radio" name="options" id="user" />
 											<div class="icon">
 												<img
-													src="vendors/images/person.svg"
+													src="../../vendors/images/person.svg"
 													class="svg"
 													alt=""
 												/>

@@ -445,7 +445,127 @@
     transition: all 0.4s ease;
     animation: fadeInDown 0.5s both 0.1s;
     box-shadow: 0px 0px 13px #00000054;
-}
+}     .new-message-box-info {
+        background: #eeeeee;
+        padding: 3px;
+        margin: 10px 0;
+        width: 500px;
+      }
+
+      .tip-box-info {
+        color: #01579b; 
+        background: #b3e5fc; 
+      }
+
+      .tip-icon-info {
+        background: #03a9f4; 
+      }
+
+      .tip-icon-info::before {
+        font-size: 25px;
+        content: "\f129";
+        top: 8px;
+        left: 11px;
+   
+        position: absolute;
+        color: white;
+      }
+
+      .tip-icon-info i::before {
+        background: #03a9f4; 
+      }
+
+      /*******info*******/
+      .new-message-box-alert {
+        background: #ff6f00;
+        padding: 3px;
+        margin: 10px 0;
+      }
+
+      .tip-box-alert {
+        color: #212121; 
+        background: #fff8e1; 
+      }
+
+      .tip-icon-alert {
+        background: #ff6f00;
+      }
+
+      .tip-icon-alert::before {
+        font-size: 25px;
+        content: "\f06a";
+        top: 8px;
+        left: 11px;
+
+        position: absolute;
+        color: white;
+      }
+
+      .tip-icon-alert i::before {
+        background: #ff6f00;
+      }
+      .new-message-box {
+        margin: 15px 0;
+        padding-left: 20px;
+        margin-bottom: 25px !important;
+      }
+
+      .new-message-box p {
+        font-size: 1.15em;
+        font-weight: 600;
+      }
+
+      .info-tab {
+        width: 40px;
+        height: 40px;
+        display: inline-block;
+        position: relative;
+        top: 8px;
+      }
+
+      .info-tab {
+        float: left;
+        margin-left: -23px;
+      }
+
+      .info-tab i::before {
+        width: 24px;
+        height: 24px;
+        box-shadow: inset 12px 0 13px rgba(0, 0, 0, 0.5);
+      }
+
+      .info-tab i::after {
+        width: 0;
+        height: 0;
+        border: 12px solid transparent;
+        border-bottom-color: #fff;
+        border-left-color: #fff;
+        bottom: -18px;
+      }
+
+      .info-tab i::before,
+      .info-tab i::after {
+        content: "";
+        display: inline-block;
+        position: absolute;
+        left: 0;
+        bottom: -17px;
+        transform: rotateX(60deg);
+      }
+
+      .note-box,
+      .warning-box,
+      .tip-box-success,
+      .tip-box-danger,
+      .tip-box-warning,
+      .tip-box-info,
+      .tip-box-alert {
+        padding: 12px 8px 3px 26px;
+      }
+      .noNoti{
+        text-decoration: none;
+        
+      }
     </style>
 </head>
 <body>
@@ -529,72 +649,89 @@
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col-xl-3 mb-30">
-              <div class="card-box height-100-p widget-style1">
-                <div class="d-flex flex-wrap align-items-center">
-                  <div class="progress-data">
-                    <div id="chart2"></div>
-                  </div>
-                  <div class="widget-data">
+        
+<div class="row">
+    <div class="col-xl-3 mb-30">
+        <div class="card-box height-100-p widget-style1">
+            <div class="d-flex flex-wrap align-items-center">
+                <div class="progress-data">
+                    <canvas id="chart2"></canvas>
+                </div>
+                <div class="widget-data">
                     <div class="h4 mb-0">{{ Auth::user()->notifications->count() }}</div>
                     <div class="weight-600 font-14">Notification</div>
-                  </div>
                 </div>
-              </div>
             </div>
-            <div class="col-xl-3 mb-30">
-              <div class="card-box height-100-p widget-style1">
-                <div class="d-flex flex-wrap align-items-center">
-                  <div class="progress-data">
-                    <div id="chart3"></div>
-                  </div>
-                  <div class="widget-data">
+        </div>
+    </div>
+    <div class="col-xl-3 mb-30">
+        <div class="card-box height-100-p widget-style1">
+            <div class="d-flex flex-wrap align-items-center">
+                <div class="progress-data">
+                    <canvas id="chart3"></canvas>
+                </div>
+                <div class="widget-data">
                     @php
                     use App\Models\appointment;
-                    $appointment = appointment::where('doctor_id', Auth::id())->count();                
-                    @endphp   
-                    <div class="h4 mb-0">
-                      {{$appointment}}
-                    </div>
-                    <div class="weight-600 font-14">Apointment</div>
-                  </div>
+                    $appointment = appointment::where('doctor_id', Auth::id())->count();
+                    @endphp
+                    <div class="h4 mb-0">{{$appointment}}</div>
+                    <div class="weight-600 font-14">Appointment</div>
                 </div>
-              </div>
             </div>
-            <div class="col-xl-3 mb-30">
-              <div class="card-box height-100-p widget-style1">
-                <div class="d-flex flex-wrap align-items-center">
-                  <div class="progress-data">
-                    <div id="chart4"></div>
-                  </div>
-                  <div class="widget-data">
+        </div>
+    </div>
+    <div class="col-xl-3 mb-30">
+        <div class="card-box height-100-p widget-style1">
+            <div class="d-flex flex-wrap align-items-center">
+                <div class="progress-data">
+                    <canvas id="chart4"></canvas>
+                </div>
+                <div class="widget-data">
                     @php
                     use App\Models\PdfFile;
-                    $invoiceAmount = PdfFile::where('doctor_id', Auth::id())->count();                
+                    $invoiceAmount = PdfFile::where('doctor_id', Auth::id())->count();
                     @endphp
                     <div class="h4 mb-0">{{$invoiceAmount}}</div>
                     <div class="weight-600 font-14">Invoice</div>
-                  </div>
                 </div>
-              </div>
             </div>
-          </div>
+        </div>
+    </div>
+</div>
+          
           <div class="row">
             <div class="col-xl-8 mb-30">
                 <div class="card-box height-100-p pd-20">
-                    {{ Auth::user()->notifications->count() }}
-                    <ul>
-                        @foreach (Auth::user()->unreadNotifications as $notification)
-                            <li>{{ $notification->data['data'] }}</li>
-                        @endforeach
+                  <h1>Notifications for new appointment {{ Auth::user()->unreadNotifications->count() }}</h1>
                     
-                        @if(Auth::user()->unreadNotifications->count() > 0)
-                            <li><a href="{{ route('notifications.markAsRead') }}" style="text-decoration: none;">Mark all as read</a></li>
-                        @endif
+                    <ul>
+                      <!---->
+                      @foreach (Auth::user()->unreadNotifications as $notification)
+                      <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+                          <div class="new-message-box">
+                            <div class="new-message-box-info">
+                              <div class="info-tab tip-icon-info" title="error"><i></i></div>
+                              <div class="tip-box-info">
+                        
+                            <li>{{ $notification->data['data'] }}</li>
+                     
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              @endforeach    
+              @if(Auth::user()->unreadNotifications->count() > 0)
+              <div class="row">
+                
+                            <li> <button style="background-color: #27ae60;colore:green;border:none; padding:5px;transform:translateX(600px)"><a href="{{ route('notifications.markAsRead') }}" style="text-decoration: none;">Mark all as read</a></button></li>
+                     
+                            @endif
                     
                         @if(Auth::user()->unreadNotifications->count() == 0)
-                            <li><a style="text-decoration: none;">No notifications</a></li>
+                            <li><a class="noNoti">No notifications</a></li>
                         @endif
                     </ul>
                   </div>
@@ -626,73 +763,60 @@
       <!-- JavaScript to render the charts with stylish customization -->
       <script>
         document.addEventListener('DOMContentLoaded', function() {
-          // Function to create a chart with stylish customization
-          function createStylishChart(elementId, data, label, gradient) {
-            const ctx = document.getElementById(elementId).getContext('2d');
-      
-            // Create gradient
-            const gradientStroke = ctx.createLinearGradient(0, 0, 0, 300);
-            gradientStroke.addColorStop(0, gradient.start);
-            gradientStroke.addColorStop(1, gradient.end);
-      
-            new Chart(ctx, {
-              type: 'doughnut',
-              data: {
-                labels: [label],
-                datasets: [{
-                  data: [data, 100 - data],
-                  backgroundColor: [gradientStroke, '#e9ecef'],
-                  hoverBackgroundColor: [gradientStroke, '#e9ecef'],
-                  borderWidth: 0,
-                }]
-              },
-              options: {
-                cutoutPercentage: 70,
-                tooltips: {
-                  enabled: true,
-                  backgroundColor: '#ffffff',
-                  borderColor: '#dee2e6',
-                  borderWidth: 1,
-                  titleFontColor: '#000',
-                  bodyFontColor: '#000',
-                  callbacks: {
-                    label: function(tooltipItem, data) {
-                      return data.labels[tooltipItem.index] + ': ' + data.datasets[0].data[tooltipItem.index] + '%';
+            var notificationsCount = {{ Auth::user()->notifications->count() }};
+            var appointmentsCount = {{ $appointment }};
+            var invoicesCount = {{ $invoiceAmount }};
+            var totalCount = notificationsCount + appointmentsCount + invoicesCount;
+        
+            function createDoughnutChart(ctx, data, backgroundColor, label) {
+                return new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        datasets: [{
+                            data: [data, totalCount - data],
+                            backgroundColor: [backgroundColor, '#e0e0e0']
+                        }],
+                        labels: [label]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutoutPercentage: 70,
+                        plugins: {
+                            tooltip: {
+                                enabled: false
+                            },
+                            legend: {
+                                display: false
+                            }
+                        }
                     }
-                  }
-                },
-                legend: {
-                  display: false,
-                },
-                animation: {
-                  animateScale: true,
-                  animateRotate: true
-                }
-              }
-            });
-          }
-      
-          // Define gradients for each chart
-          const gradients = {
-            patient: {start: '#4caf50', end: '#8bc34a'},
-            doctor: {start: '#2196f3', end: '#03a9f4'},
-            appointment: {start: '#ff9800', end: '#ffc107'},
-            invoice: {start: '#f44336', end: '#e57373'}
-          };
-      
-          // Get data from the elements
-          const patientCount = parseInt(document.getElementById('patient-count').textContent);
-          const doctorCount = parseInt(document.getElementById('doctor-count').textContent);
-          const appointmentCount = parseInt(document.getElementById('appointment-count').textContent);
-          const invoiceAmount = parseFloat(document.getElementById('invoice-amount').textContent);
-      
-          // Create the stylish charts
-          createStylishChart('chart1', patientCount, 'Patients', gradients.patient);
-          createStylishChart('chart2', doctorCount, 'Doctors', gradients.doctor);
-          createStylishChart('chart3', appointmentCount, 'Appointments', gradients.appointment);
-          createStylishChart('chart4', invoiceAmount, 'Invoices', gradients.invoice);
+                });
+            }
+        
+            function updatePercentage(ctx, percentage) {
+                var chartCenter = ctx.canvas.getContext('2d');
+                chartCenter.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                chartCenter.font = '20px Arial';
+                chartCenter.fillStyle = '#000';
+                chartCenter.textAlign = 'center';
+                chartCenter.textBaseline = 'middle';
+                chartCenter.fillText(percentage + '%', ctx.canvas.width / 2, ctx.canvas.height / 2);
+            }
+        
+            var ctx2 = document.getElementById('chart2').getContext('2d');
+            createDoughnutChart(ctx2, notificationsCount, '#FF6384', 'Notifications');
+            updatePercentage(ctx2, Math.round((notificationsCount / totalCount) * 100));
+        
+            var ctx3 = document.getElementById('chart3').getContext('2d');
+            createDoughnutChart(ctx3, appointmentsCount, '#36A2EB', 'Appointments');
+            updatePercentage(ctx3, Math.round((appointmentsCount / totalCount) * 100));
+        
+            var ctx4 = document.getElementById('chart4').getContext('2d');
+            createDoughnutChart(ctx4, invoicesCount, '#FFCE56', 'Invoices');
+            updatePercentage(ctx4, Math.round((invoicesCount / totalCount) * 100));
         });
-      </script>
+        </script>
           <!-- Google Tag Manager (noscript) -->
           <noscript
             ><iframe

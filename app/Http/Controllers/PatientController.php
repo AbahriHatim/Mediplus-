@@ -48,19 +48,29 @@ class PatientController extends Controller
     public function getPrescribedMedicines()
     {
         $userId = auth()->id();
-        $prescribedMedicines = Prescription::where('idUser', $userId)->get();
-        $prescribedMedicineIds = $prescribedMedicines->pluck('idMedicament');
-
-        if ($prescribedMedicineIds->isEmpty()) {
-            return collect(); // Return an empty collection if no medicines are found
-        }
-
-        $medicines = Medicament::whereIn('idMedicine', $prescribedMedicineIds)->get();
-        return $medicines;
+    
+        // Fetch prescriptions for the logged-in user and include related medicine details
+        $prescriptions = Prescription::where('idUser', $userId)
+            ->with('medicine')
+            ->get();
+    
+        // Map the prescriptions to the desired format for treatment details
+        $prescribedMedicines = $prescriptions->map(function ($prescription) {
+            return [
+                'idMedicament' => $prescription->idMedicament,
+                'name' => $prescription->medicine->name,
+                'dosage' => $prescription->dosage,
+                'startDate' => $prescription->startDate instanceof \DateTime ? $prescription->startDate->format('Y-m-d') : $prescription->startDate,
+                'endDate' => $prescription->endDate instanceof \DateTime ? $prescription->endDate->format('Y-m-d') : $prescription->endDate,
+            ];
+        });
+    
+        return $prescribedMedicines;
     }
+    
     public function doctorList()
     {
-        $doctors = DetailsDoctor::all();
+        $doctors = DetailsDoctor::paginate(10);
         return view('patient.doctorList', compact('doctors'));
     }
 

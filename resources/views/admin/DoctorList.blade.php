@@ -54,6 +54,9 @@
       href="../src/plugins/datatables/css/responsive.bootstrap4.min.css"
     />
     <link rel="stylesheet" type="text/css" href="../vendors/styles/style.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/paginationjs/dist/pagination.min.css">
+<script src="https://cdn.jsdelivr.net/npm/paginationjs/dist/pagination.min.js"></script>
+
     <style>  
 
 
@@ -488,8 +491,18 @@
       
       </tr>  
      @endforeach
-</tbody>
-</table>
+    </tbody>
+  </table>
+     <div class="pagination">
+      <a class="pagination-item" href="/page=1">1</a>
+      <a class="pagination-item active" href="/page=2">2</a>
+      <a class="pagination-item" href="/page=3">3</a>
+      <!-- More page links -->
+      <a class="pagination-item" href="/page=5">5</a>
+      <a class="pagination-item" href="/page=2" rel="next">Next</a>
+  </div>
+  
+
 
 </div>
 </div>

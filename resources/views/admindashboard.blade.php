@@ -445,78 +445,77 @@
         </div>
         <div class="row">
           <div class="col-xl-3 mb-30">
-            <div class="card-box height-100-p widget-style1">
-              <div class="d-flex flex-wrap align-items-center">
-                <div class="progress-data">
-                  <canvas id="chart1"></canvas>
-                </div>
-                @php
-                use App\Models\User;
-        
-                  $patient = User::whereHas('roles', function ($query) {
-                    $query->where('name', 'patient');
-                  })->count(); 
-                @endphp
-                <div class="widget-data">
-                  <div class="h4 mb-0" id="patient-count">{{ $patient }}</div>
-                  <div class="weight-400 font-14">Patient</div>
-                </div>
+              <div class="card-box height-100-p widget-style1">
+                  <div class="d-flex flex-wrap align-items-center">
+                      <div class="progress-data">
+                          <canvas id="chart1"></canvas>
+                      </div>
+                      @php
+                      use App\Models\User;
+                      $patient = User::whereHas('roles', function ($query) {
+                          $query->where('name', 'patient');
+                      })->count(); 
+                      @endphp
+                      <div class="widget-data">
+                          <div class="h4 mb-0" id="patient-count">{{ $patient }}</div>
+                          <div class="weight-400 font-14">Patient</div>
+                      </div>
+                  </div>
               </div>
-            </div>
           </div>
           <div class="col-xl-3 mb-30">
-            <div class="card-box height-100-p widget-style1">
-              <div class="d-flex flex-wrap align-items-center">
-                <div class="progress-data">
-                  <canvas id="chart2"></canvas>
-                </div>
-                <div class="widget-data">
-                  @php
-                  $doctor = User::whereHas('roles', function ($query) {
-                    $query->where('name', 'doctore');
-                  })->count(); 
-                  @endphp
-                  <div class="h4 mb-0" id="doctor-count">{{ $doctor }}</div>
-                  <div class="weight-400 font-14">Doctors</div>
-                </div>
+              <div class="card-box height-100-p widget-style1">
+                  <div class="d-flex flex-wrap align-items-center">
+                      <div class="progress-data">
+                          <canvas id="chart2"></canvas>
+                      </div>
+                      <div class="widget-data">
+                        @php
+                        $doctor = User::whereHas('roles', function ($query) {
+                          $query->where('name', 'doctore');
+                        })->count(); 
+                        @endphp
+                          <div class="h4 mb-0" id="doctor-count">{{ $doctor }}</div>
+                          <div class="weight-400 font-14">Doctors</div>
+                      </div>
+                  </div>
               </div>
-            </div>
           </div>
           <div class="col-xl-3 mb-30">
-            <div class="card-box height-100-p widget-style1">
-              <div class="d-flex flex-wrap align-items-center">
-                <div class="progress-data">
-                  <canvas id="chart3"></canvas>
-                </div>
-                <div class="widget-data">
-                  @php
-                  use App\Models\Appointment;
-                  $appointmentCount = Appointment::count();
-                  @endphp
-                  <div class="h4 mb-0" id="appointment-count">{{ $appointmentCount }}</div>
-                  <div class="weight-600 font-14">Appointments</div>
-                </div>
+              <div class="card-box height-100-p widget-style1">
+                  <div class="d-flex flex-wrap align-items-center">
+                      <div class="progress-data">
+                          <canvas id="chart3"></canvas>
+                      </div>
+                      <div class="widget-data">
+                          @php
+                          use App\Models\Appointment;
+                          $appointmentCount = Appointment::count();
+                          @endphp
+                          <div class="h4 mb-0" id="appointment-count">{{ $appointmentCount }}</div>
+                          <div class="weight-600 font-14">Appointments</div>
+                      </div>
+                  </div>
               </div>
-            </div>
           </div>
           <div class="col-xl-3 mb-30">
-            <div class="card-box height-100-p widget-style1">
-              <div class="d-flex flex-wrap align-items-center">
-                <div class="progress-data">
-                  <canvas id="chart4"></canvas>
-                </div>
-                <div class="widget-data">
-                  @php
-                  use App\Models\PdfFile;
-                  $invoiceAmount = PdfFile::count();
-                  @endphp
-                  <div class="h4 mb-0" id="invoice-amount">{{ $invoiceAmount }}</div>
-                  <div class="weight-600 font-14">Invoice</div>
-                </div>
+              <div class="card-box height-100-p widget-style1">
+                  <div class="d-flex flex-wrap align-items-center">
+                      <div class="progress-data">
+                          <canvas id="chart4"></canvas>
+                      </div>
+                      <div class="widget-data">
+                          @php
+                          use App\Models\PdfFile;
+                          $invoiceAmount = PdfFile::count();
+                          @endphp
+                          <div class="h4 mb-0" id="invoice-amount">{{ $invoiceAmount }}</div>
+                          <div class="weight-600 font-14">Invoice</div>
+                      </div>
+                  </div>
               </div>
-            </div>
           </div>
-        </div>
+      </div>
         <div class="row">
           <div class="col-xl-8 mb-30">
             <div class="card-box height-100-p pd-20">
@@ -551,75 +550,70 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <!-- JavaScript to render the charts with stylish customization -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- JavaScript to render the charts with stylish customization -->
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // Function to create a chart with stylish customization
-    function createStylishChart(elementId, data, label, gradient) {
-      const ctx = document.getElementById(elementId).getContext('2d');
-
-      // Create gradient
-      const gradientStroke = ctx.createLinearGradient(0, 0, 0, 300);
-      gradientStroke.addColorStop(0, gradient.start);
-      gradientStroke.addColorStop(1, gradient.end);
-
-      new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-          labels: [label],
-          datasets: [{
-            data: [data, 100 - data],
-            backgroundColor: [gradientStroke, '#e9ecef'],
-            hoverBackgroundColor: [gradientStroke, '#e9ecef'],
-            borderWidth: 0,
-          }]
-        },
-        options: {
-          cutoutPercentage: 70,
-          tooltips: {
-            enabled: true,
-            backgroundColor: '#ffffff',
-            borderColor: '#dee2e6',
-            borderWidth: 1,
-            titleFontColor: '#000',
-            bodyFontColor: '#000',
-            callbacks: {
-              label: function(tooltipItem, data) {
-                return data.labels[tooltipItem.index] + ': ' + data.datasets[0].data[tooltipItem.index] + '%';
+      var patientCount = {{ $patient }};
+      var doctorCount = {{ $doctor }};
+      var appointmentCount = {{ $appointmentCount }};
+      var invoiceAmount = {{ $invoiceAmount }};
+      var totalCount = patientCount + doctorCount + appointmentCount + invoiceAmount;
+  
+      function createDoughnutChart(ctx, data, backgroundColor, label) {
+          return new Chart(ctx, {
+              type: 'doughnut',
+              data: {
+                  datasets: [{
+                      data: [data, totalCount - data],
+                      backgroundColor: [backgroundColor, '#e0e0e0']
+                  }],
+                  labels: [label]
+              },
+              options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  cutoutPercentage: 70,
+                  plugins: {
+                      tooltip: {
+                          enabled: false
+                      },
+                      legend: {
+                          display: false
+                      }
+                  }
               }
-            }
-          },
-          legend: {
-            display: false,
-          },
-          animation: {
-            animateScale: true,
-            animateRotate: true
-          }
-        }
-      });
-    }
-
-    // Define gradients for each chart
-    const gradients = {
-      patient: {start: '#4caf50', end: '#8bc34a'},
-      doctor: {start: '#2196f3', end: '#03a9f4'},
-      appointment: {start: '#ff9800', end: '#ffc107'},
-      invoice: {start: '#f44336', end: '#e57373'}
-    };
-
-    // Get data from the elements
-    const patientCount = parseInt(document.getElementById('patient-count').textContent);
-    const doctorCount = parseInt(document.getElementById('doctor-count').textContent);
-    const appointmentCount = parseInt(document.getElementById('appointment-count').textContent);
-    const invoiceAmount = parseFloat(document.getElementById('invoice-amount').textContent);
-
-    // Create the stylish charts
-    createStylishChart('chart1', patientCount, 'Patients', gradients.patient);
-    createStylishChart('chart2', doctorCount, 'Doctors', gradients.doctor);
-    createStylishChart('chart3', appointmentCount, 'Appointments', gradients.appointment);
-    createStylishChart('chart4', invoiceAmount, 'Invoices', gradients.invoice);
+          });
+      }
+  
+      function updatePercentage(ctx, percentage) {
+          var chartCenter = ctx.canvas.getContext('2d');
+          chartCenter.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+          chartCenter.font = '20px Arial';
+          chartCenter.fillStyle = '#000';
+          chartCenter.textAlign = 'center';
+          chartCenter.textBaseline = 'middle';
+          chartCenter.fillText(percentage + '%', ctx.canvas.width / 2, ctx.canvas.height / 2);
+      }
+  
+      var ctx1 = document.getElementById('chart1').getContext('2d');
+      createDoughnutChart(ctx1, patientCount, '#FF6384', 'Patients');
+      updatePercentage(ctx1, Math.round((patientCount / totalCount) * 100));
+  
+      var ctx2 = document.getElementById('chart2').getContext('2d');
+      createDoughnutChart(ctx2, doctorCount, '#36A2EB', 'Doctors');
+      updatePercentage(ctx2, Math.round((doctorCount / totalCount) * 100));
+  
+      var ctx3 = document.getElementById('chart3').getContext('2d');
+      createDoughnutChart(ctx3, appointmentCount, '#FFCE56', 'Appointments');
+      updatePercentage(ctx3, Math.round((appointmentCount / totalCount) * 100));
+  
+      var ctx4 = document.getElementById('chart4').getContext('2d');
+      createDoughnutChart(ctx4, invoiceAmount, '#4CAF50', 'Invoices');
+      updatePercentage(ctx4, Math.round((invoiceAmount / totalCount) * 100));
   });
-</script>
+  </script>
     <!-- Google Tag Manager (noscript) -->
     <noscript
       ><iframe

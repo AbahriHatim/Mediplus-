@@ -153,27 +153,23 @@
         <ul class="list-group">
             @foreach($medicines as $medicine)
             <li class="list-group-item">
-                <strong>Name:</strong> {{ $medicine->name }}<br>
-                <strong>Form:</strong> {{ $medicine->form }}<br>
-                <strong>Marketing Status:</strong> {{ $medicine->marketingStatus }}<br>
-                <strong>Approval Date:</strong> {{ $medicine->approvalDate }}<br>
-                <strong>Price:</strong> {{ $medicine->price }}<br>
-                <strong>URI:</strong> <a href="{{ $medicine->URI }}">{{ $medicine->URI }}</a>
-                <form method="POST" action="{{ route('deleteMedi', ['idMedicament' => $medicine->idMedicine]) }}">
+                <strong>Name:</strong> {{ $medicine['name'] }}<br>
+                <strong>Dosage:</strong> {{ $medicine['dosage'] }}<br>
+                <strong>Start Date:</strong> {{ $medicine['startDate'] }}<br>
+                <strong>End Date:</strong> {{ $medicine['endDate'] }}<br>
+                <form method="POST" action="{{ route('deleteMedi', ['idMedicament' => $medicine['idMedicament']]) }}">
                     @csrf
                     @method('DELETE')
-                    <button type="submit">Delete</button>
+                    <button type="submit" class="btn btn-danger btn-sm mt-2">Delete</button>
                 </form>
             </li>
             @endforeach
         </ul>
-        
         @else
             <p>No medicines found.</p>
         @endif
-    </main>
     
-    <button class="info btn btn-primary">Add med</button>
+    <button class="info btn btn-primary" style="transform: translate(1150px,-350px)">Add med</button>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
