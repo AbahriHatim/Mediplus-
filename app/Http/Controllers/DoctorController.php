@@ -75,7 +75,7 @@ class DoctorController extends Controller
         // Fetch patients separately
         $patients = User::whereHas('roles', function ($query) {
             $query->where('name', 'patient');
-        })->get();
+        })->paginate(5);
 
         return view('doctor.form', compact('patients'));
     }
@@ -197,17 +197,17 @@ class DoctorController extends Controller
     public function searchBarPatient(Request $request)
     {
         $search = $request->input('search');
-
+    
         // Perform your search logic here
         $patients = User::where('name', 'like', '%' . $search . '%')
             ->whereHas('roles', function ($query) {
                 $query->where('name', 'patient');
             })
-            ->get();
-
-        // Pass the search results to the view
+            ->paginate(5); // Add pagination here if needed
+    
         return view('doctor.form', compact('patients'));
     }
+    
     public function getTreatmentDetails($patientId)
     {
         // Fetch prescriptions for the specified patient

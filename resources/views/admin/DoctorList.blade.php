@@ -54,8 +54,12 @@
       href="../src/plugins/datatables/css/responsive.bootstrap4.min.css"
     />
     <link rel="stylesheet" type="text/css" href="../vendors/styles/style.css" />
+    <link rel="stylesheet" type="text/css" href="../plugins/datatables/css/responsive.bootstrap4.min.css" />
+
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/paginationjs/dist/pagination.min.css">
 <script src="https://cdn.jsdelivr.net/npm/paginationjs/dist/pagination.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 
     <style>  
 
@@ -484,7 +488,7 @@
             <form method="POST" action="{{ route('deleteUser', ['id' => $doctor->id]) }}">
                 @csrf
                 @method('DELETE')
-                <button type="submit">Delete</button>
+                <button style="border: none;background:#f2f2f2" type="submit">Delete</button>
             </form>
         </td>
         
@@ -493,15 +497,10 @@
      @endforeach
     </tbody>
   </table>
-     <div class="pagination">
-      <a class="pagination-item" href="/page=1">1</a>
-      <a class="pagination-item active" href="/page=2">2</a>
-      <a class="pagination-item" href="/page=3">3</a>
-      <!-- More page links -->
-      <a class="pagination-item" href="/page=5">5</a>
-      <a class="pagination-item" href="/page=2" rel="next">Next</a>
-  </div>
-  
+
+  <div class="d-flex justify-content-center" style="margin-top: 8px">
+    {{ $doctors->links() }}
+</div>
 
 
 </div>

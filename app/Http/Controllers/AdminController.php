@@ -48,7 +48,7 @@ class AdminController extends Controller
         // Fetch patients and doctors separately
         $patients = User::whereHas('roles', function ($query) {
             $query->where('name', 'patient');
-        })->get();
+        })->paginate(10);
     
        
     
@@ -62,7 +62,7 @@ class AdminController extends Controller
 {
         $doctors = User::whereHas('roles', function ($query) {
         $query->where('name', 'doctore');
-    })->get();
+    })->paginate(7);
     $doctors = $doctors ?: [];
     return view('admin/Doctorlist', compact('doctors'));
 }
@@ -122,7 +122,7 @@ class AdminController extends Controller
 
 
     public function listInvoice(){
-        $listInvoice = PdfFile::all();
+        $listInvoice = PdfFile::paginate(15);
         return view('admin/Invoice', compact('listInvoice'));
     }
 

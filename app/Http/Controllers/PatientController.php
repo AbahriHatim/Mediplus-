@@ -73,11 +73,12 @@ class PatientController extends Controller
         $doctors = DetailsDoctor::paginate(10);
         return view('patient.doctorList', compact('doctors'));
     }
+    
 
     public function searchDoctors(Request $request)
     {
         $query = DetailsDoctor::query();
-
+    
         if ($request->has('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
@@ -85,10 +86,16 @@ class PatientController extends Controller
                   ->orWhere('specialization', 'LIKE', "%{$search}%");
             });
         }
-
+    
         $doctors = $query->get();
+    
+        if ($request->ajax()) {
+            return response()->json($doctors);
+        }
+    
         return view('patient.doctorList', compact('doctors'));
     }
+    
     public function profileDoctor($id)
     {
         $doctor = DetailsDoctor::findOrFail($id);

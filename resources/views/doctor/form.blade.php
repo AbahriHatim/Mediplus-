@@ -69,7 +69,7 @@
                                 <nav class="navigation">
                                     <ul class="nav menu">
                                         <li><a href="{{ route('doctordashboard') }}" style="text-decoration: none;">Home</a></li>
-                                        <li class="active"><a href="{{ route('PatientList') }}" style="text-decoration: none;">Patient List</a></li>
+                                        <li class="active"><a href="{{ route('PatientListDo') }}" style="text-decoration: none;">Patient List</a></li>
                                         <li ><a href="{{ route('showSchedule') }}" style="text-decoration: none;">Schedule</a></li>
 
                                         <li><a href="{{ route('chatify') }}" style="text-decoration: none;">Messageri <i class="fa fa-comment" aria-hidden="true"></i></a></li>
@@ -94,41 +94,38 @@
             </div>
         </div>
     </header>
-<div class="searchBar">
-    <form action="{{ route('searchBarPatientDoc') }}" method="GET"  >
-        <input type="text" name="search" placeholder="Name of the patient" style=" width: 430px;">
-        <button type="submit"  style="background-color: #1a68b3; transform: translate(5%, -10%); padding-top: 8px ;color:white" class="btn">Search</button>
-    </form>
-</div>
-<table class="custom-table">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Treatment</th>
-            <th>Prescription</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($patients as $patient)
-            <tr>
-                <td>{{ $patient->id }}</td>
-                <td>{{ $patient->name }}</td>
-                <td>{{ $patient->email }}</td>
-                <td><a href="{{ route('treatmentDetails', ['patientId' => $patient->id]) }}" style="text-decoration: none; "> <button style="padding: 8px ;background-color: hsl(209, 44%, 66%);">traitemen</button> </a>
-                  
-                </td>
-                <td><a href="{{ route('addForm', ['patientId' => $patient->id]) }}"style="text-decoration: none;"><button style="padding: 8px ;background-color: hsl(209, 44%, 66%)">Prescription</button> </a></td>
-            </tr>
-        @endforeach
-    </tbody>
-</table>
-
-
-
-
+    <div class="searchBar">
+        <form action="{{ route('searchBarPatientDoc') }}" method="GET"  >
+            <input type="text" name="search" placeholder="Name of the patient" style=" width: 430px;">
+            <button type="submit"  style="background-color: #1a68b3; transform: translate(5%, -10%); padding-top: 8px ;color:white" class="btn">Search</button>
+        </form>
+    </div>
     
-
+    <table class="custom-table" id="doctorTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Treatment</th>
+                <th>Prescription</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($patients as $patient)
+                <tr>
+                    <td>{{ $patient->id }}</td>
+                    <td>{{ $patient->name }}</td>
+                    <td>{{ $patient->email }}</td>
+                    <td><a href="{{ route('treatmentDetails', ['patientId' => $patient->id]) }}" style="text-decoration: none;"><button style="padding: 8px; background-color: hsl(209, 44%, 66%);">Treatment</button></a></td>
+                    <td><a href="{{ route('addForm', ['patientId' => $patient->id]) }}" style="text-decoration: none;"><button style="padding: 8px; background-color: hsl(209, 44%, 66%);">Prescription</button></a></td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+    
+    <div class="d-flex justify-content-center" style="margin-top: 8px">
+        {{ $patients->links() }}
+    </div>
 </body>
 </html>    

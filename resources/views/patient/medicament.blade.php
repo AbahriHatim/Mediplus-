@@ -169,7 +169,7 @@
             <p>No medicines found.</p>
         @endif
     
-    <button class="info btn btn-primary" style="transform: translate(1150px,-350px)">Add med</button>
+    <button class="info btn btn-primary" style="margin-top: 20px">Add med</button>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {

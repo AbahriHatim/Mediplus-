@@ -1,57 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-       <meta http-equiv="X-UA-Compatible" content="IE=edge">
-       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-       <title>Mediplus - Free Medical and Doctor Directory HTML Template</title>
-       <link rel="icon" href="../img/favicon.png">
-       <link href="https://fonts.googleapis.com/css?family=Poppins:200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
-       <link rel="stylesheet" href="../css/bootstrap.min.css">
-       <link rel="stylesheet" href="../css/normalize.css">
-       <link rel="stylesheet" href="../style.css">
-       <link rel="stylesheet" href="../css/responsive.css">
-       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-       <link rel="stylesheet" href="../css/icofont.css">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Mediplus - Free Medical and Doctor Directory HTML Template</title>
+    <link rel="icon" href="../img/favicon.png">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/normalize.css">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/icofont.css">
     <style>  
-
         .searchBar{
-         transform: translateX(30%);
-         font-size: 20px;
-        
-     }
-     .custom-table {
-     width: 100%;
-     border-collapse: collapse;
-    
- }
- 
- .custom-table th {
-     background-color: #1a68b3;
-     color: white;
- }
- 
- .custom-table th,
- .custom-table td {
-     padding: 8px;
-     border: 1px solid #ddd;
- }
- 
- .custom-table td {
-     text-align: left;
- }
- 
- .custom-table tbody tr:nth-child(even) {
-     background-color: #f2f2f2;
- }
- 
- .custom-table tbody tr:hover {
-     background-color: #ddd;
- }
- 
-  
- 
-     </style>
+            transform: translateX(30%);
+            font-size: 20px;
+        }
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .custom-table th {
+            background-color: #1a68b3;
+            color: white;
+        }
+        .custom-table th,
+        .custom-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+        .custom-table td {
+            text-align: left;
+        }
+        .custom-table tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .custom-table tbody tr:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
 <body>
     <header class="header">
         <!-- Header Inner -->
@@ -74,7 +64,7 @@
                             <div class="main-menu" style="transform: translateX(-10%)">
                                 <nav class="navigation">
                                     <ul class="nav menu">
-                                        <li ><a href="{{ route('patientdashboard') }}" style="text-decoration: none;">Home</a></li>
+                                        <li><a href="{{ route('patientdashboard') }}" style="text-decoration: none;">Home</a></li>
                                         <li>
                                             <a style="text-decoration: none;">Notifications 
                                                 <span class="badge text-bg-secondary">{{ Auth::user()->unreadNotifications->count() }}</span>
@@ -92,8 +82,7 @@
                                             </ul>
                                         </li>
                                         <li><a href="{{ route('medicament') }}" style="text-decoration: none;">Medicament</a></li>
-                                        <li class="active"><a href="{{ route('DoctorListPa') }}" style="text-decoration: none;">Docotr List</a></li>
-
+                                        <li class="active"><a href="{{ route('DoctorListPa') }}" style="text-decoration: none;">Doctor List</a></li>
                                         <li><a href="{{ route('chatify') }}" style="text-decoration: none;">Messenger <i class="fa fa-comment" aria-hidden="true"></i></a></li>
                                     </ul>
                                 </nav>
@@ -123,15 +112,14 @@
         <h1>Doctor List</h1>
 
         <!-- Search Form -->
-        <form method="GET" action="{{ route('searchDoctors') }}" class="mb-4">
+        <form method="GET" action="{{ route('searchDoctors') }}" class="mb-4" id="searchForm">
             <div class="input-group">
-                <input type="text" name="search" class="form-control" placeholder="Search by name or specialization" value="{{ request('search') }}">
-                <button type="submit" class="btn btn-primary" style="background-color: rgb(74, 157, 235); ">Search</button>
+                <input type="text" name="search" class="form-control" placeholder="Search by name or specialization" id="searchInput" value="{{ request('search') }}">
             </div>
         </form>
 
         <!-- Doctor Table -->
-        <table class="custom-table">
+        <table class="custom-table" id="doctorTable">
             <thead>
                 <tr>
                     <th scope="col">ID</th>
@@ -156,13 +144,53 @@
                                 <input type="hidden" name="doctor_id" value="{{ $doctor->user_id }}">
                                 <button type="submit" style="background-color: rgb(74, 157, 235); color:white;" class="btn btn-info">Book Appointment</button>
                             </form>
-                            
-                                       
                         </td>   
-                     </tr>
+                    </tr>
                 @endforeach
             </tbody>
         </table>
+        <div class="d-flex justify-content-center" style="margin-top: 8px">
+            {{ $doctors->links() }}
+        </div>
     </div>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#searchInput').on('input', function() {
+                var search = $(this).val();
+                $.ajax({
+                    url: '{{ route('searchDoctors') }}',
+                    method: 'GET',
+                    data: { search: search },
+                    success: function(data) {
+                        var doctorTable = $('#doctorTable tbody');
+                        doctorTable.empty();
+                        if (data.length > 0) {
+                            data.forEach(function(doctor) {
+                                doctorTable.append(
+                                    '<tr>' +
+                                        '<td>' + doctor.user_id + '</td>' +
+                                        '<td>' + doctor.name + '</td>' +
+                                        '<td>' + doctor.specialization + '</td>' +
+                                        '<td><a href="/doctorProfile/' + doctor.id + '" style="background-color: rgb(74, 157, 235); color:white;" class="btn btn-info">View Profile</a></td>' +
+                                        '<td>' +
+                                            '<form action="/appointmentPa/' + doctor.user_id + '" method="GET">' +
+                                                '@csrf' +
+                                                '<input type="hidden" name="doctor_id" value="' + doctor.user_id + '">' +
+                                                '<button type="submit" style="background-color: rgb(74, 157, 235); color:white;" class="btn btn-info">Book Appointment</button>' +
+                                            '</form>' +
+                                        '</td>' +
+                                    '</tr>'
+                                );
+                            });
+                        } else {
+                            doctorTable.append('<tr><td colspan="5">No doctors found</td></tr>');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

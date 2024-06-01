@@ -484,7 +484,9 @@
                     @endforeach
                 </tbody>
             </table>
-            
+            <div class="d-flex justify-content-center" style="margin-top: 8px">
+              {{ $listInvoice->links() }}
+          </div>
             
 </div>
 </div>
