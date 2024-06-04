@@ -81,7 +81,7 @@ class AdminController extends Controller
         $user->password = Hash::make($request->password);
         $user->save();
         
-        return redirect()->route('admindashboard');
+        return redirect()->route('DoctorListAd');
     }
     public function deleteUser($id)
     {

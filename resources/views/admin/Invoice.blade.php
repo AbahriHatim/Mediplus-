@@ -212,10 +212,10 @@
               role="button"
               data-toggle="dropdown"
             >
-              <span class="user-icon">
-                <img src="../vendors/images/photo1.jpg" alt="" />
-              </span>
-              <span class="user-name">Ross C. Lopez</span>
+            <span class="user-icon">
+              <img src="../images/admin.jpg" alt="" />
+            </span>
+            <span class="user-name">Admin</span>
             </a>
             <div
               class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list"
